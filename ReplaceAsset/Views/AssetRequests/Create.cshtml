@@ -1,0 +1,154 @@
+﻿@model ReplaceAsset.Models.AssetRequest
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row gutters justify-content-center">
+    <div class="col-10 mt-5">
+        <form asp-action="Create" method="post">
+            <div class="card m-0">
+                <div class="container d-flex justify-content-center">
+                    <div class="card-header text-center">
+                        <h3 class="card-title font-weight-bold">Request Form Replacement Asset</h3>
+                    </div>
+                </div>
+                <hr class="m-0" />
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row gutters ">
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Name</label>
+                                <input asp-for="Name" class="form-control" placeholder="Full Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="Departement" class="control-label"></label>
+                                <input asp-for="Departement" class="form-control" />
+                                <span asp-validation-for="Departement" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="Type" class="control-label"></label>
+                                <input asp-for="Type" class="form-control" placeholder="Ex: HP G10/PC DM G9/PC SFF G9" />
+                                <span asp-validation-for="Type" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Serial Number</label>
+                                <input asp-for="SerialNumber" class="form-control" placeholder="Ex: 5CGxxxxxxx/8CCxxxxxxx/4CExxxxxxx" />
+                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Baseline</label>
+                                <select asp-for="Baseline" class="form-control">
+                                    <option value="">-- Select Baseline --</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Sharing">Sharing</option>
+                                    <option value="Xibo">Xibo</option>
+                                    <option value="Assembly">Assembly</option>
+                                    <option value="Test">Test</option>
+                                    <option value="Mask">Mask</option>
+                                    <option value="MPC-Kiosk">MPCKiosk</option>
+                                    <option value="FAB-S">Fab-S</option>
+
+                                </select>
+                                <span asp-validation-for="Baseline" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Usage Location</label>
+                                <select asp-for="UsageLocation" class="form-control">
+                                    <option value="">-- Select Usage Location --</option>
+                                    <option value="BAT1BLOCK1">BAT 1 BLOCK 1</option>
+                                    <option value="BAT1BLOCK2">BAT 1 BLOCK 2</option>
+                                    <option value="BAT1BLOCK3">BAT 1 BLOCK 3</option>
+                                    <option value="BAT1BLOCK4">BAT 1 BLOCK 4</option>
+                                    <option value="BAT2BLOCK5">BAT 2 BLOCK 5</option>
+                                    <option value="BAT2BLOCK6">BAT 2 BLOCK 6</option>
+                                    <option value="BAT2BLOCK7">BAT 2 BLOCK 7</option>
+                                    <option value="BAT2BLOCK8">BAT 2 BLOCK 8</option>
+                                    <option value="BAT2BLOCK9">BAT 2 BLOCK 9</option>
+                                    <option value="BAT3BLOCK10">BAT 3 BLOCK 10</option>
+                                    <option value="BAT3BLOCK11">BAT 3 BLOCK 11</option>
+                                    <option value="BAT3BLOCK12">BAT 3 BLOCK 12</option>
+                                </select>
+                                <span asp-validation-for="UsageLocation" class="text-danger"></span>
+                            </div>
+                        </div>
+                        @* <div class="col-6">
+                        <div class="form-group">
+                        <label asp-for="ApprovalDate" class="control-label"></label>
+                        <input asp-for="ApprovalDate" class="form-control" />
+                        <span asp-validation-for="ApprovalDate" class="text-danger"></span>
+                        </div> *@
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Request Date</label>
+                                <input asp-for="RequestDate" class="form-control" />
+                                <span asp-validation-for="RequestDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        @* <div class="col-6">
+                        <div class="form-group">
+                        <label asp-for="Justify" class="control-label"></label>
+                        <input asp-for="Justify" class="form-control" />
+                        <span asp-validation-for="Justify" class="text-danger"></span>
+                        </div>
+                        </div> *@
+
+                        <div class="form-group">
+                            <label asp-for="Reason" class="control-label"></label>
+                            <textarea asp-for="Reason" class="form-control" id="reasonTextarea" placeholder="Enter Reason Request" maxlength="1000" rows="4"></textarea>
+                            <div class="form-text text-muted">
+                                <p id="characterLeft" class="help-block">140 characters left</p>
+                            </div>
+                            <span asp-validation-for="Reason" class="text-danger"></span>
+                        </div>
+                        <div class="container d-flex justify-content-center">
+                            <input type="submit" value="Submit" class="btn btn-primary" style="margin: 0 5px;" />
+                            <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            $(document).ready(function () {
+                var reasonTextarea = $('#reasonTextarea');
+                var characterLeftDisplay = $('#characterLeft');
+                var maxLength = reasonTextarea.attr('maxlength');
+
+                updateCharacterCount();
+
+                reasonTextarea.on('input', function () {
+                    updateCharacterCount();
+                });
+
+                function updateCharacterCount() {
+                    var enteredText = reasonTextarea.val();
+                    var remainingCharacters = maxLength - enteredText.length;
+                    characterLeftDisplay.text(remainingCharacters + ' characters left');
+                }
+            });
+        </script>
+
+    }
+}
+

@@ -1,0 +1,133 @@
+﻿@model ReplaceAsset.Models.AssetRequest
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<div class="row gutters justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card">
+            <div class="card-header text-center border-bottom">
+                <h2 class="card-title font-weight-bold">Delete Asset Request</h2>
+            </div>
+            <hr class="m-0" />
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Departement" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Type" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Serial Number</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.SerialNumber" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <div class="input-group">
+                                <textarea class="form-control" rows="3" readonly>@Model.Reason</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="input-group">
+                                @if (!Model.Status.HasValue)
+                                {
+                                    <span class="form-control badge badge-warning">Waiting for Approval</span>
+                                }
+                                else if (Model.Status.Value)
+                                {
+                                    <span class="form-control badge badge-success">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="form-control badge badge-danger">Rejected</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Baseline</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Baseline" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Usage Location</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.UsageLocation" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Request Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.RequestDate" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Approval Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.ApprovalDate" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Justification</label>
+                            <div class="input-group">
+                                <textarea class="form-control" rows="3" readonly>@Model.Justify</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type Replace</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.TypeReplace" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+
+                <form asp-action="Delete">
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.Id)">Delete</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Are you sure want ?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/AssetRequests/Delete/' + id + '?handler=Delete';
+                }
+            });
+        }
+    </script>
+}

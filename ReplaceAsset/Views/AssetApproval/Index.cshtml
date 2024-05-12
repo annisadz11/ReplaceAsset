@@ -1,0 +1,249 @@
+﻿@{
+    ViewData["Title"] = "Approval Asset Requests";
+}
+
+<link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
+<link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
+
+<div class="row gutters mt-4">
+    <div class="card">
+        <div class="card-header text-center">Approval Asset Requests</div>
+        <hr class="m-0" />
+        <div class="card-body">
+            <table id="table"
+                   data-toggle="table"
+                   data-locale="en-US"
+                   data-sticky-header="true"
+                   data-sticky-header-offset-y="60"
+                   data-search="true"
+                   data-toolbar="#toolbar"
+                   data-search-highlight="true"
+                   data-search-align="right"
+                   data-show-toggle="true"
+                   data-show-refresh="true"
+                   data-show-columns="true"
+                   data-buttons="[]"
+                   data-key-events="true"
+                   data-url="@Url.Action("GetData", "AssetApproval")"
+                   data-pagination="true"
+                   data-side-pagination="server"
+                   data-show-columns-toggle-all="true"
+                   data-pagination-loop="false"
+                   data-pagination-pre-text="Previous"
+                   data-pagination-next-text="Next"
+                   data-page-size="50">
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true" data-width="200">Name</th>
+                        <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
+                        <th data-field="type" data-sortable="true" data-width="100">Type</th>
+                        <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
+                        <th data-field="baseline" data-sortable="true" data-width="150">Baseline</th>
+                        <th data-field="usageLocation" data-sortable="true" data-width="150">Usage Location</th>
+                        <th data-field="reason" data-sortable="true" data-width="300">Reason</th>
+                        <th data-field="justify" data-sortable="true" data-width="200">Justify</th>
+                        <th data-field="typeReplace" data-sortable="true" data-width="200">Type Replace</th>
+                        <th data-field="requestDate" data-sortable="true" data-width="150">Request Date</th>
+                        <th data-field="status" data-sortable="true" data-formatter="statusFormatter" class="text-center" data-width="150">Status</th>
+                        <th data-field="approvalDate" data-sortable="true" data-width="150">Approval Date</th>
+                        <th data-formatter="actionFormatter" class="text-center no-space-three text-nowrap" data-width="250">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal Approve -->
+<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveModalLabel">Enter Justification for Approval</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="approveJustification" class="col-form-label">Justification:</label>
+                        <textarea class="form-control" id="approveJustification" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="typeReplace" class="col-form-label">Type Replace:</label>
+                        <select class="form-control" id="typeReplace" required>
+                            <option value="">Select Type Replace</option>
+                            <option value="NewAssetReplacement">New Asset Replacement</option>
+                            <option value="ComponentAssetReplacement">Component Asset Replacement</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-secondary data-dismiss="modal">Cancel</a>
+                <button type="button" class="btn btn-primary" id="approveButton">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Reject -->
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">Enter Justification for Rejection</h5>
+
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="rejectJustification" class="col-form-label">Justification:</label>
+                        <textarea class="form-control" id="rejectJustification"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-secondary data-dismiss="modal">Cancel</a>
+                <button type="button" class="btn btn-danger" id="rejectButton">Reject</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
+    <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
+    <script src="~/vendor/bootstrap-modal/js/bootstrap-modal.js"></script>
+    <script src="~/vendor/bootstrap-modal/js/bootstrap-modal.min.js"></script>
+    <script>
+        function statusFormatter(value, row, index) {
+            let statusHtml;
+            if (value === null) {
+                statusHtml = '<span class="badge rounded-pill text-bg-secondary" style="line-height: 1; vertical-align: middle;">Waiting for Approval</span>';
+            } else if (value === true) {
+                statusHtml = '<span class="badge rounded-pill text-bg-success" style="line-height: 1; vertical-align: middle;">Approved</span>';
+            } else {
+                statusHtml = '<span class="badge rounded-pill text-bg-danger" style="line-height: 1; vertical-align: middle;">Rejected</span>';
+            }
+            return statusHtml;
+        }
+
+        function actionFormatter(value, row, index) {
+            var approveBtn = '<button type="button" class="btn btn-sm btn-primary" onclick="approveRequest(' + row.id + ', \'' + row.name + '\')">Approve</button>';
+            var rejectBtn = '<button type="button" class="btn btn-danger btn-sm" onclick="rejectRequest(' + row.id + ', \'' + row.name + '\')">Reject</button>';
+            return approveBtn + ' ' + rejectBtn;
+        }
+
+        // Fungsi approve dan reject
+        function approveRequest(id, name) {
+            $('#approveModalLabel').text('Enter justification for approving the request for ' + name);
+            $('#approveJustification').val('');
+            $('#typeReplace').val('');
+            $('#approveModal').modal('show');
+
+            $('#approveButton').off('click').on('click', function () {
+                var justify = $('#approveJustification').val().trim();
+                var typeReplace = $('#typeReplace').val();
+
+                if (justify === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Warning',
+                        text: 'Please enter a justification.'
+                    });
+                } else if (typeReplace === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Warning',
+                        text: 'Please select a type replace.'
+                    });
+                } else {
+                    $.ajax({
+                        url: "@Url.Action("Approve", "AssetApproval")", // Ganti dengan URL yang benar
+                        type: "POST",
+                        data: { id: id, justify: justify, typeReplace: typeReplace },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $('#table').bootstrapTable('refresh');
+                                        $('#approveModal').modal('hide');
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error approving the request: ' + error
+                            });
+                            $('#approveModal').modal('hide');
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+
+        function rejectRequest(id, name) {
+            $('#rejectModalLabel').text('Enter justification for rejecting the request for ' + name);
+            $('#rejectModal').modal('show');
+            $('#rejectButton').off('click').on('click', function () {
+                var justify = $('#rejectJustification').val().trim();
+                if (justify !== '') {
+                    $.ajax({
+                        url: "@Url.Action("Reject", "AssetApproval")",
+                        type: "POST",
+                        data: { id: id, justify: justify }, // Menghapus tanda koma berlebihan
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $('#table').bootstrapTable('refresh');
+                                        $('#rejectModal').modal('hide');
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Error rejecting the request.'
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error rejecting the request: ' + error
+                            });
+                            $('#rejectModal').modal('hide');
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Warning',
+                        text: 'Please enter a justification.'
+                    });
+                }
+            });
+        }
+    </script>
+}

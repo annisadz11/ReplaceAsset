@@ -1,0 +1,53 @@
+﻿@* @model ReplaceAsset.Models.NewAssetReplacement
+
+@{
+    ViewData["Title"] = "Edit";
+    DateTime? dateReplace = (DateTime?)ViewData["Date Replace"];
+}
+<div class="row gutters justify-content-center">
+    <div class="col-10 mt-5">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <div class="card m-2">
+                <div class="container d-flex justify-content-center">
+                    <div class="card-header text-center">
+                        <h3 class="card-title font-weight-bold mb-0" style="font-size: 1.2rem;">New Asset Replacement Details</h3>
+                    </div>
+                </div>
+                <hr class="m-0" />
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row gutters justify-content-center">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Name</label>
+                                <input asp-for="Name" class="form-control" required />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">New Type</label>
+                                <input asp-for="NewType" class="form-control" placeholder="New Asset Type" required />
+                                <span asp-validation-for="NewType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">New Serial Number</label>
+                                <input asp-for="NewSerialNumber" class="form-control" placeholder="" required />
+                                <span asp-validation-for="NewSerialNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Date Replace</label>
+                                <input asp-for="DateReplace" class="form-control" required />
+                                <span asp-validation-for="DateReplace" class="text-danger"></span>
+                            </div>
+
+                            <div class="container d-flex justify-content-center">
+                                <input type="submit" value="Update" class="btn btn-primary" style="margin: 0 5px;" />
+                                <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> *@

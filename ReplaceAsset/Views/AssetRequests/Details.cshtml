@@ -1,0 +1,130 @@
+﻿@model ReplaceAsset.Models.AssetRequest
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="row gutters justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card">
+            <div class="card-header text-center border-bottom">
+                <h2 class="card-title font-weight-bold">Asset Request Details</h2>
+            </div>
+            <hr class="m-0" />
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Departement" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Type" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Serial Number</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.SerialNumber" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <div class="input-group">
+                                <textarea class="form-control" rows="3" readonly>@Model.Reason</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="input-group">
+                                @if (!Model.Status.HasValue)
+                                {
+                                    <span class="form-control badge badge-warning">Waiting for Approval</span>
+                                }
+                                else if (Model.Status.Value)
+                                {
+                                    <span class="form-control badge badge-success">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="form-control badge badge-danger">Rejected</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Baseline</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.Baseline" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Usage Location</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.UsageLocation" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Request Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.RequestDate" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Approval Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.ApprovalDate" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Justification</label>
+                            <div class="input-group">
+                                <textarea class="form-control" rows="3" readonly>@Model.Justify</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type Replace</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.TypeReplace" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@* <!-- Konten halaman web -->
+
+            <body>
+                <script>
+                    document.getElementById('downloadBtn').addEventListener('click', function () {
+                        var doc = new jsPDF();
+                        var formContent = document.querySelector('.card-body').innerHTML;
+
+                        doc.setFontSize(12);
+                        doc.html(formContent, {
+                            callback: function (pdf) {
+                                pdf.save('asset-request-details.pdf');
+                            }
+                        });
+                    });
+                </script>
+            </body> *@
+

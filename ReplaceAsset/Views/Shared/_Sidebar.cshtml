@@ -1,0 +1,114 @@
+﻿﻿<nav id="sidebar" class="sidebar-wrapper">
+
+	<!-- Sidebar brand start  -->
+	<div class="w-100 d-flex">
+		<a class="navbar-brand mx-auto flex-fill text-center" asp-controller="home" asp-action="index" style="margin-top:20px;">
+			<img src="~/img/LOGO.png" width="auto" height="24" alt="Website Logo" class="d-block mx-auto">
+		</a>
+	</div>
+	<hr style="margin-top:1rem;margin-bottom:0;"> <!-- Sidebar brand end  -->
+	<!-- Sidebar content start -->
+	<div class="sidebar-content">
+
+		<!-- sidebar menu start -->
+		<div class="sidebar-menu">
+			<ul>
+				<li class="header-menu">USER</li>
+				<li>
+					<a href="#">
+						<a asp-controller="Home" asp-action="Index">
+							<i class="icon-devices_other"></i>
+							<span class="menu-text">Dashboard</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="AssetRequests" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">Request Replacement</span>
+						</a>
+					</a>
+				</li>
+
+				<li class="header-menu">MANAGER</li>
+				<li>
+					<a href="#">
+						<a asp-controller="Home" asp-action="Index">
+							<i class="icon-devices_other"></i>
+							<span class="menu-text">Dashboard</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="AssetApproval" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">Approval Replacement</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="ScrapApproval" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">Approval Scrap</span>
+						</a>
+					</a>
+				</li>
+
+
+
+
+
+
+				<li class="header-menu">ADMIN</li>
+				<li>
+					<a href="#">
+						<a asp-controller="NewAssetReplacements" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">New Asset Replacement</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="ComponentAssetReplacements" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">Component Asset Replacement</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="NewAssets" asp-action="Index">
+							<i class="icon-documents"></i>
+							<span class="menu-text">New Asset</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="NewHires" asp-action="Index">
+							<i class="icon-message-circle"></i>
+							<span class="menu-text">New Hire</span>
+						</a>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<a asp-controller="AssetScraps" asp-action="Index">
+							<i class="icon-devices_other"></i>
+							<span class="menu-text">Asset Scrap</span>
+						</a>
+					</a>
+				</li>
+
+			</ul>
+		</div>
+		<!-- sidebar menu end -->
+
+	</div>
+	<!-- Sidebar content end -->
+
+</nav>
