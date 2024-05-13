@@ -34,7 +34,7 @@
                    data-page-size="50">
                 <thead>
                     <tr>
-                        <th data-field="assetRequestName" data-sortable="true" data-width="200">Asset Request Name</th>
+                        <th data-field="assetRequestName" data-sortable="true" data-width="200">Requestor</th>
                         <th data-field="assetRequestDepartment" data-sortable="true" data-width="150">Department</th>
                         <th data-field="assetRequestType" data-sortable="true" data-width="100">Type</th>
                         <th data-field="assetRequestSerialNumber" data-sortable="true" data-width="150">Serial Number</th>
@@ -44,7 +44,6 @@
                         <th data-field="assetRequestJustify" data-sortable="true" data-width="200">Justify</th>
                         <th data-field="assetRequestTypeReplace" data-sortable="true" data-width="200">Type Replace</th>
                         <th data-field="assetRequestApprovalDate" data-sortable="true" data-width="150">Approval Date</th>
-                        <th data-field="name" data-sortable="true" data-width="200">Asset Name</th>
                         <th data-field="validationReplace" data-sortable="true" data-formatter="statusFormatter" class="text-center" data-width="150">Validation Replace</th>
                         <th data-field="componentReplaceDate" data-sortable="true" data-width="150">Component Replace Date</th>
                         <th data-formatter="actionFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
@@ -54,48 +53,89 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Component Replacement</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="updateId" />
+                    <div class="form-group">
+                        <label for="updateComponentReplaceDate">Component Replace Date</label>
+                        <input type="date" class="form-control" id="updateComponentReplaceDate" placeholder="Enter Component Replace Date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                <button type="button" class="btn btn-primary" id="doneReplacedBtn">Done Replaced</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/notyf/notyf.min.js"></script>
+    <link href="~/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
     <script>
         function statusFormatter(value, row, index) {
-            let statusHtml;
-            if (value === null) {
-                statusHtml = '<span class="badge rounded-pill text-bg-secondary" style="line-height: 1; vertical-align: middle;">Waiting for Replace</span>';
-            } else if (value === true) {
-                statusHtml = '<span class="badge rounded-pill text-bg-success" style="line-height: 1; vertical-align: middle;">Done Replace</span>';
+            if (value) {
+                return '<span class="badge badge-success">Done Replaced</span>';
+            } else {
+                return '<span class="badge badge-secondary">Pending</span>';
             }
-            return statusHtml;
         }
+
+        var $updateModal = $('#updateModal');
+        function showUpdateModal(id) {
+            $('#updateId').val(id);
+            var row = $('#table').bootstrapTable('getRowByUniqueId', id);
+            var componentReplaceDate = row ? row.componentReplaceDate : null;
+
+            if (componentReplaceDate) {
+                $('#updateComponentReplaceDate').val(componentReplaceDate.substring(0, 10));
+            } else {
+                $('#updateComponentReplaceDate').val('');
+            }
+
+            $updateModal.modal('show');
+        }
+
+        $('#doneReplacedBtn').click(function () {
+            var id = $('#updateId').val();
+            var componentReplaceDate = $('#updateComponentReplaceDate').val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateComponentReplacement", "ComponentAssetReplacements")',
+                data: { id: id, componentReplaceDate: componentReplaceDate },
+                success: function (response) {
+                    if (response.success) {
+                        $('#table').bootstrapTable('refresh');
+                        $('#updateModal').modal('hide');
+                        Swal.fire('Success!', response.message, 'success');
+                    } else {
+                        Swal.fire('Failed!', response.message, 'error');
+                    }
+                }
+            });
+        });
 
         function actionFormatter(value, row, index) {
-            var editUrl = '@Url.Action("Edit", "ComponentAssetReplacements")' + '/' + row.id;
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
-            return editBtn;
+            var updateBtn = '<button type="button" class="btn btn-sm btn-warning" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+            var detailsUrl = `/ComponentAssetReplacements/Details/${row.id}`; 
+            var detailsBtn = `<a href="${detailsUrl}" class="btn btn-sm btn-info">Details</a>`;
+            return updateBtn + ' ' + detailsBtn;
         }
 
-        $(function () {
-            var $table = $('#table');
-
-            // Periksa apakah tabel sudah diinisialisasi sebelumnya
-            if (!$table.data('bootstrap.table')) {
-                $table.bootstrapTable({
-                    url: '@Url.Action("GetData", "ComponentAssetReplacements")',
-                    pageSize: 50,
-                    columns: [
-                        // Definisikan kolom-kolom tabel di sini
-                        {
-                            field: 'assetRequestName',
-                            title: 'Asset Request Name',
-                            sortable: true,
-                            width: 200
-                        },
-                        // ...
-                    ]
-                });
-            }
-        });
     </script>
 }

@@ -108,23 +108,3 @@
     </div>
 </div>
 
-
-
-@* <!-- Konten halaman web -->
-
-            <body>
-                <script>
-                    document.getElementById('downloadBtn').addEventListener('click', function () {
-                        var doc = new jsPDF();
-                        var formContent = document.querySelector('.card-body').innerHTML;
-
-                        doc.setFontSize(12);
-                        doc.html(formContent, {
-                            callback: function (pdf) {
-                                pdf.save('asset-request-details.pdf');
-                            }
-                        });
-                    });
-                </script>
-            </body> *@
-

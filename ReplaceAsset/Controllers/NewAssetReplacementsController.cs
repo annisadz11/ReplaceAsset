@@ -44,13 +44,13 @@ namespace ReplacementAsset.Controllers
                     assetRequestJustify = n.AssetRequest.Justify,
                     assetRequestTypeReplace = n.AssetRequest.TypeReplace,
                     assetRequestApprovalDate = n.AssetRequest.ApprovalDate.HasValue ?
-                                               n.AssetRequest.ApprovalDate.Value.ToString("yyyy-MM-dd") : null,
-                    newType = n.NewType ?? "", // Pastikan properti ini match di view
-                    newSerialNumber = n.NewSerialNumber ?? "", // Pastikan properti ini match di view
+                                       n.AssetRequest.ApprovalDate.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null,
+                    newType = n.NewType ?? "",
+                    newSerialNumber = n.NewSerialNumber ?? "",
                     dateReplace = n.DateReplace.HasValue ?
-                                  n.DateReplace.Value.ToString("yyyy-MM-dd") : null,
+                          n.DateReplace.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null,
                 })
-                .ToList();
+        .ToList();
 
             return Json(new { rows = newAssetReplacementsData });
         }
@@ -66,9 +66,9 @@ namespace ReplacementAsset.Controllers
                     id = n.Id,
                     newType = n.NewType,
                     newSerialNumber = n.NewSerialNumber,
-                    dateReplace = n.DateReplace.HasValue ? n.DateReplace.Value.ToString("yyyy-MM-ddTHH:mm:ssZ") : null
+                    dateReplace = n.DateReplace.HasValue ? n.DateReplace.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null
                 })
-                .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync();
 
             if (newAssetReplacement == null)
             {
@@ -107,105 +107,24 @@ namespace ReplacementAsset.Controllers
                 return Json(new { success = false, message = "Error updating the request." });
             }
         }
-    }
-}
-/**//*
-        // GET: ComponentAssetReplacements
-        public IActionResult Index()
+
+        // GET: NewAssetReplacements/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var componentAssetReplacements = _context.ComponentAssetReplacement.Include(n => n.AssetRequest).ToList();
-            return View(componentAssetReplacements);
-        }*//*
-
-
-        // GET: NewAssetReplacement
-        public IActionResult Index()
-        {
-           *//* var newAssetReplacements = _context.NewAssetReplacement
-                .Include(n => n.AssetRequest)
-                .Where(n => n.NewType == null || n.NewSerialNumber == null || n.DateReplace == null)
-                .ToList();
-
-            return View(newAssetReplacements);*//*
-            var newAssetReplacements = _context.NewAssetReplacement.Include(n => n.AssetRequest).ToList();
-            return View(newAssetReplacements);
-        }
-
-
-        // API ENDPOINT
-        [HttpGet]
-        public IActionResult GetData()
-        {
-            var newAssetReplacements = _context.NewAssetReplacement
-                .Select(n => new
-                {
-                    id = n.Id,
-                    assetRequestName = n.AssetRequest.Name,
-                    assetRequestDepartment = n.AssetRequest.Departement,
-                    assetRequestType = n.AssetRequest.Type,
-                    assetRequestSerialNumber = n.AssetRequest.SerialNumber,
-                    assetRequestBaseline = n.AssetRequest.Baseline,
-                    assetRequestUsageLocation = n.AssetRequest.UsageLocation,
-                    assetRequestReason = n.AssetRequest.Reason,
-                    assetRequestJustify = n.AssetRequest.Justify,
-                    assetRequestTypeReplace = n.AssetRequest.TypeReplace,
-                    assetRequestApprovalDate = n.AssetRequest.ApprovalDate.HasValue ? n.AssetRequest.ApprovalDate.Value.ToString("dd MMM yyyy") : null,
-                    name = n.Name,
-                    newType = n.NewType,
-                    newSerialNumber = n.NewSerialNumber,
-                    dateReplace = n.DateReplace.HasValue ? n.DateReplace.Value.ToString("dd MMM yyyy") : null
-                })
-                .ToList();
-
-            return Json(new { rows = newAssetReplacements });
-        }
-
-
-        // GET: NewAssetReplacements/Create
-        public IActionResult Create(int? id)
-        {
-            // Ambil data AssetRequest berdasarkan id jika tersedia
-            var assetRequest = id.HasValue ? _context.AssetRequest.Find(id) : null;
-
-            // Buat view model untuk menampung data yang dibutuhkan
-            var viewModel = new
-            {
-                AssetRequest = assetRequest,
-                NewType = string.Empty,
-                NewSerialNumber = string.Empty,
-                DateReplace = (DateTime?)null
-            };
-
-            return View(viewModel);
-        }
-
-        // POST: NewAssetReplacements/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int assetRequestId, string newType, string newSerialNumber, DateTime? dateReplace)
-        {
-            // Ambil data AssetRequest berdasarkan id
-            var assetRequest = await _context.AssetRequest.FindAsync(assetRequestId);
-
-            if (assetRequest == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var newAssetReplacement = new NewAssetReplacement
+            var newAssetReplacement = await _context.NewAssetReplacement
+                .Include(n => n.AssetRequest)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (newAssetReplacement == null)
             {
-                AssetRequestId = assetRequestId,
-                NewType = newType,
-                NewSerialNumber = newSerialNumber,
-                DateReplace = dateReplace
-            };
+                return NotFound();
+            }
 
-            _context.Add(newAssetReplacement);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            return View(newAssetReplacement);
         }
     }
-
 }
-*/

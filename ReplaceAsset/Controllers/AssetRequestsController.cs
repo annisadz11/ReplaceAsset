@@ -92,6 +92,7 @@ namespace ReplaceAsset.Controllers
 
                 _context.Add(assetRequest);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Asset request created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             return View(assetRequest);

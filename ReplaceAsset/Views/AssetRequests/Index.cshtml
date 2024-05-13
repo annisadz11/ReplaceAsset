@@ -62,7 +62,30 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
+    <script src="~/vendor/notyf/notyf.min.js"></script>
+
     <script>
+        var notyf = new Notyf({
+            position: {
+                x: 'center',
+                y: 'top',
+            },
+            duration: 3000,
+            dismissible: true,
+            types: [
+                {
+                    type: 'success',
+                    background: 'green',
+                    icon: false
+                },
+                {
+                    type: 'error',
+                    background: 'red',
+                    icon: false
+                }
+            ]
+        });
+
         function statusFormatter(value, row, index) {
             let statusHtml;
             if (value === null) {
@@ -92,32 +115,14 @@
         }
 
         $(function () {
-            var $table = $('#table');
-
-            // Periksa apakah tabel sudah diinisialisasi sebelumnya
-            if (!$table.data('bootstrap.table')) {
-                $table.bootstrapTable({
-                    url: '@Url.Action("GetData", "AssetRequest")',
-                    pageSize: 50,
-                    columns: [
-                        // Definisikan kolom-kolom tabel di sini
-                        {
-                            field: 'name',
-                            title: 'Name',
-                            sortable: true,
-                            width: 200
-                        },
-                        // ...
-                    ]
-                });
-
-                $table.on('load-success.bs.table', function () {
+            $('#table').bootstrapTable({
+                // options dan callback bootstrap-table Anda
+            }).on('load-success.bs.table', function (e, data) {
         @if (TempData["SuccessMessage"] != null)
         {
-            @:Swal.fire("Success!", "@TempData["SuccessMessage"]", "success");
+            @:notyf.success('@TempData["SuccessMessage"]');
         }
-                                });
-            }
+                    });
         });
     </script>
 }
