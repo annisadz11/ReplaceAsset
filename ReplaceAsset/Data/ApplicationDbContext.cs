@@ -14,7 +14,7 @@ namespace ReplaceAsset.Data
 
 		public DbSet<ComponentAssetReplacement> ComponentAssetReplacement { get; set; }
 		public DbSet<NewAssetReplacement> NewAssetReplacement { get; set; }
+        public DbSet<NewHire> NewHire { get; set; }
 
-
-	}
+    }
 }
