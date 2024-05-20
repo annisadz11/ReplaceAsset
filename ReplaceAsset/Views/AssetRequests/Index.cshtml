@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Asset Request Form";
+    ViewData["Title"] = "Asset Requests";
 }
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
@@ -9,6 +9,9 @@
         <div class="card-header text-center" style="font-size: 1.00rem;">Asset Request Form</div>
         <hr class="m-0" />
         <div class="card-body">
+            <!-- Breadcrumb -->
+            <partial name="_Breadcrumb" />
+            <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
                     <a class="btn btn-primary " asp-action="Create">Add New Request</a>
@@ -44,9 +47,9 @@
                         <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
                         <th data-field="baseline" data-sortable="true" data-width="150">Baseline</th>
                         <th data-field="usageLocation" data-sortable="true" data-width="150">Usage Location</th>
-                        <th data-field="reason" data-sortable="true" data-width="300">Reason</th>
+@*                         <th data-field="reason" data-sortable="true" data-width="300">Reason</th>
                         <th data-field="justify" data-sortable="true" data-width="200">Justify</th>
-                        <th data-field="typeReplace" data-sortable="true" data-width="200">Type Replace</th>
+ *@                        <th data-field="typeReplace" data-sortable="true" data-width="200">Type Replace</th>
                         <th data-field="requestDate" data-sortable="true" data-width="150">Request Date</th>
                         <th data-field="status" data-sortable="true" data-formatter="statusFormatter" class="text-center" data-width="150">Status</th>
                         <th data-field="approvalDate" data-sortable="true" data-width="150">Approval Date</th>

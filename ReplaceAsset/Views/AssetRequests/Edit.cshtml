@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.AssetRequest
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Asset Requests";
     DateTime? approvalDate = (DateTime?)ViewData["ApprovalDate"];
 }
 
@@ -16,6 +16,9 @@
                 </div>
                 <hr class="m-0" />
                 <div class="card-body">
+                    <!-- Breadcrumb -->
+                    <partial name="_Breadcrumb" />
+                    <!-- Toolbar -->
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <div class="row gutters justify-content-center">
@@ -61,6 +64,7 @@
                                     <option value="Mask">Mask</option>
                                     <option value="MPC-Kiosk">MPCKiosk</option>
                                     <option value="FAB-S">Fab-S</option>
+
                                 </select>
                                 <span asp-validation-for="Baseline" class="text-danger"></span>
                             </div>
@@ -100,10 +104,10 @@
                         </div>
                         <span asp-validation-for="Reason" class="text-danger"></span>
                     </div>
-                </div>
                 <div class="container d-flex justify-content-center">
                     <input type="submit" value="Update" class="btn btn-primary" style="margin: 0 5px;" />
                     <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>
+                </div>
                 </div>
             </div>
         </form>

@@ -19,8 +19,78 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-        // GET: AssetRequest
-        public IActionResult Index()
+        // Endpoint untuk menghitung data
+        [HttpGet]
+        public IActionResult GetDashboardData()
+        {
+            var totalRequests = _context.AssetRequest.Count();
+            var totalApproved = _context.AssetRequest.Count(r => r.Status == true);
+            var totalRejected = _context.AssetRequest.Count(r => r.Status == false);
+            var waitingForApproval = _context.AssetRequest.Count(r => r.Status == null);
+
+            return Json(new
+            {
+                totalRequests,
+                totalApproved,
+                totalRejected,
+                waitingForApproval
+            });
+        }
+
+		//Endpoint untuk Apextchart Requestor
+		[HttpGet]
+		public IActionResult GetRequestorData()
+		{
+			var requestCounts = _context.AssetRequest
+				.GroupBy(r => r.RequestDate.HasValue ? r.RequestDate.Value.Month : (int?)null)
+				.Select(g => new
+				{
+					Month = g.Key,
+					Count = g.Count()
+				})
+				.ToList();
+
+			var requestData = new int[12];
+			foreach (var req in requestCounts)
+			{
+				if (req.Month.HasValue)
+					requestData[req.Month.Value - 1] = req.Count;
+			}
+
+			return Json(requestData);
+		}
+
+        //Endpoint untuk TotalRequest
+		[HttpGet]
+		public IActionResult GetTotalRequests()
+		{
+			var totalRequests = _context.AssetRequest.Count();
+			return Json(totalRequests);
+		}
+
+        //Endpoint untuk RequestHistory
+		[HttpGet]
+		public IActionResult GetRequestHistory()
+		{
+			var requests = _context.AssetRequest
+				.OrderByDescending(r => r.RequestDate)
+				.Select(r => new
+				{
+					r.Id,
+					r.Name,
+					r.Departement,
+					r.Reason,
+					r.Status,
+					r.ApprovalDate
+				})
+				.Take(10) // Menampilkan 10 permintaan terakhir
+				.ToList();
+
+			return Json(requests);
+		}
+
+		// GET: AssetRequest
+		public IActionResult Index()
         {
             return View();
         }

@@ -18,9 +18,15 @@ namespace ReplaceAsset.Controllers
         {
             _context = context;
         }
+		[HttpGet]
+		public IActionResult GetTotalComponentReplacements()
+		{
+			var totalComponentReplacements = _context.ComponentAssetReplacement.Count();
+			return Json(totalComponentReplacements);
+		}
 
-        // GET: ComponentAssetReplacements
-        public IActionResult Index()
+		// GET: ComponentAssetReplacements
+		public IActionResult Index()
         {
             var componentAssetReplacements = _context.ComponentAssetReplacement.Include(n => n.AssetRequest).ToList();
             return View(componentAssetReplacements);

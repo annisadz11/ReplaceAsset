@@ -18,6 +18,14 @@ namespace ReplacementAsset.Controllers
             _context = context;
         }
 
+        [HttpGet]
+           public IActionResult GetToTalNewAssetReplacements()
+        {
+            var totalNewAssetReplacements = _context.NewAssetReplacement.Count();
+            return Json(new { totalNewAssetReplacements });
+
+        }
+
         // GET: NewAssetReplacement
         public IActionResult Index()
         {

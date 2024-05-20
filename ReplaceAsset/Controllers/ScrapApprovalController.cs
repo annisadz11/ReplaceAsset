@@ -20,32 +20,31 @@ namespace ReplaceAsset.Controllers
         }
 
         // GET: ScrapApproval
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.AssetScrap.ToListAsync());
+            return View();
         }
 
-
+        // API ENDPOINT
         [HttpGet]
         public IActionResult GetData()
         {
-            var newHire = _context.NewHire
+            var pendingScraps = _context.AssetScrap
+                .Where(a => !a.ValidationScrap) // Menampilkan hanya yang pending (ValidationScrap == false)
                 .Select(a => new
                 {
                     id = a.Id,
-                    name = a.Name,
-                    department = a.Department,
-                    designation = a.Designation,
+                    type = a.Type,
                     serialNumber = a.SerialNumber,
-                    device = a.Device,
-                    modelAsset = a.ModelAsset,
-                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy") : null,
-                    statusCompleted = a.StatusCompleted
+                    location = a.Location,
+                    dateInput = a.DateInput.HasValue ? a.DateInput.Value.ToString("dd MMM yyyy") : null,
+                    validationScrap = a.ValidationScrap
                 })
                 .ToList();
 
-            return Json(new { rows = newHire });
+            return Json(new { rows = pendingScraps });
         }
+
         [HttpPost]
         public IActionResult ApproveScrap(int id)
         {

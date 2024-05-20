@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.AssetScrap
 
 @{
-    ViewData["Title"] = "Edit Asset Scrap";
+    ViewData["Title"] = "Asset Scraps";
     DateTime? dateInput = (DateTime?)ViewData["DateInput"];
 }
 
@@ -16,6 +16,9 @@
                 </div>
                 <hr class="m-0" />
                 <div class="card-body">
+                    <!-- Breadcrumb -->
+                    <partial name="_Breadcrumb" />
+                    <!-- Toolbar -->
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <div class="row gutters justify-content-center">
@@ -66,23 +69,20 @@
     </div>
 </div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
     <script src="~/vendor/notyf/notyf.min.js"></script>
     <link href="~/vendor/notyf/notyf.min.css" rel="stylesheet" />
+    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+
     <script>
         $(document).ready(function () {
-            var form = $('form');
-
-            form.submit(function (event) {
+            $('#editForm').submit(function (event) {
                 event.preventDefault(); // Prevent the form from submitting normally
 
+                var formData = $(this).serialize();
                 $.ajax({
-                    url: '@Url.Action("Edit", "AssetScraps")',
+                    url: '@Url.Action("EditPost", "AssetScrap", new { id = Model.Id })',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    data: formData,
                     success: function (data) {
                         if (data.success) {
                             Swal.fire({
@@ -91,12 +91,12 @@
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(function () {
-                                window.location.href = '@Url.Action("Index", "AssetScraps")';
+                                window.location.href = '@Url.Action("Index", "AssetScrap")'; // Redirect to Index after successful update
                             });
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: data.message,
+                                text: Array.isArray(data.message) ? data.message.join(', ') : data.message,
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });

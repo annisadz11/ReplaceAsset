@@ -27,6 +27,8 @@ namespace ReplaceAsset.Controllers
                 .Where(nh => !nh.StatusCompleted) // StatusCompleted == false means 'waiting for deploy'
                 .ToListAsync();
 
+            ViewBag.Id = 1;
+
             return View(newHires);
         }
 

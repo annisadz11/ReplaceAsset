@@ -20,8 +20,16 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-        // GET: NewHires
-        public async Task<IActionResult> Index()
+		[HttpGet]
+		public IActionResult GetTotalNewHires()
+		{
+			var totalNewHires = _context.NewHire.Count();
+			return Json(totalNewHires);
+		}
+
+
+		// GET: NewHires
+		public async Task<IActionResult> Index()
         {
             return View(await _context.NewHire.ToListAsync());
         }

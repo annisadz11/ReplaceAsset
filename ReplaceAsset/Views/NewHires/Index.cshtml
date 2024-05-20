@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "New Hire Form";
+    ViewData["Title"] = "New Hires";
 }
 
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
@@ -10,6 +10,9 @@
         <div class="card-header text-center" style="font-size: 1.0rem;">Form Asset New Hire</div>
         <hr class="m-0" />
         <div class="card-body">
+            <!-- Breadcrumb -->
+            <partial name="_Breadcrumb" />
+            <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
                     <a class="btn btn-primary" asp-action="Create">Add Data New Hire</a>

@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.NewHire
 
 @{
-    ViewData["Title"] = "Add Data New Hire";
+    ViewData["Title"] = "New Hires";
 }
 
 <div class="row gutters justify-content-center">
@@ -14,6 +14,9 @@
             </div>
             <hr class="m-0" />
             <div class="card-body">
+                <!-- Breadcrumb -->
+                <partial name="_Breadcrumb" />
+                <!-- Toolbar -->
                 <form asp-action="Create" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="row gutters justify-content-center">

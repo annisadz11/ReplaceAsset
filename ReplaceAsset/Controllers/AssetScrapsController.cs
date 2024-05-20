@@ -19,8 +19,17 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-        // GET: AssetScraps
-        public IActionResult Index()
+        //Endpoint untuk Total Scrap
+		[HttpGet]
+		public IActionResult GetTotalScraps()
+		{
+			var totalScraps = _context.AssetScrap.Count();
+			return Json(totalScraps);
+		}
+
+
+		// GET: AssetScraps
+		public IActionResult Index()
         {
             return View();
         }
@@ -43,7 +52,6 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { rows = assetScraps });
         }
-
         // GET: AssetScraps/Create
         public IActionResult Create()
         {
@@ -84,17 +92,30 @@ namespace ReplaceAsset.Controllers
         // POST: AssetScraps/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,SerialNumber,Location,DateInput,ValidationScrap")] AssetScrap assetScrap)
+        public async Task<IActionResult> EditPost(int id, [Bind("Id,Type,SerialNumber,Location,DateInput,ValidationScrap")] AssetScrap assetScrap)
         {
             if (id != assetScrap.Id)
             {
-                return NotFound();
+                return Json(new { success = false, message = "ID mismatch." });
+            }
+
+            var existingAssetScrap = await _context.AssetScrap.FindAsync(id);
+
+            if (existingAssetScrap == null)
+            {
+                return Json(new { success = false, message = "Asset Scrap not found." });
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Jika existingAssetScrap.ValidationScrap adalah true, pertahankan nilainya
+                    if (existingAssetScrap.ValidationScrap)
+                    {
+                        assetScrap.ValidationScrap = true;
+                    }
+
                     _context.Update(assetScrap);
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Asset Scrap updated successfully!" });
@@ -103,19 +124,16 @@ namespace ReplaceAsset.Controllers
                 {
                     if (!AssetScrapExists(assetScrap.Id))
                     {
-                        return NotFound();
+                        return Json(new { success = false, message = "Asset Scrap not found after concurrency check." });
                     }
                     else
-                    {
                         throw;
-                    }
                 }
             }
 
-            return Json(new { success = false, message = "Error updating the Asset Scrap." });
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return Json(new { success = false, message = errors.Any() ? string.Join(", ", errors) : "Validation error." });
         }
-
-        // GET: AssetScraps/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

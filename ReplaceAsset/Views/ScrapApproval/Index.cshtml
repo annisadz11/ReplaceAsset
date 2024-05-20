@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Approval Scrap Asset Replacement";
+    ViewData["Title"] = "Approval Scrap";
 }
 
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
@@ -10,6 +10,9 @@
         <div class="card-header text-center" style="font-size: 1.00rem;">Asset Scrap Approval</div>
         <hr class="m-0" />
         <div class="card-body">
+            <!-- Breadcrumb -->
+            <partial name="_Breadcrumb" />
+            <!-- Toolbar -->
             <table id="table"
                    data-toggle="table"
                    data-locale="en-US"
@@ -58,7 +61,7 @@
     <script>
         function statusFormatter(value, row, index) {
             if (value) {
-                return '<span class="badge badge-success">Done Replaced</span>';
+                return '<span class="badge badge-success">Done Scrap</span>';
             } else {
                 return '<span class="badge badge-secondary">Pending</span>';
             }

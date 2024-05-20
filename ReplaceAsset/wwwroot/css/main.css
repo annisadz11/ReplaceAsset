@@ -4,6 +4,21 @@
     font-weight: 500
 }
 
+.breadcrumb {
+    background-color: rgba(255, 255, 255, 0.8); /* Latar belakang putih semi-transparant */
+    font-weight: bold; /* Membuat teks breadcrumb tebal */
+    margin-bottom: 1rem; /* Memberikan jarak antara breadcrumb dan konten */
+}
+
+.breadcrumb-item a {
+    color: #343a40; /* Mengubah warna link menjadi abu-abu tua */
+    text-decoration: none; /* Menghilangkan garis bawah pada link */
+}
+
+.breadcrumb-item.active {
+    color: #007bff; /* Mengubah warna item aktif menjadi biru */
+}
+
 h1.styled:after, h2.styled:after, h3.styled:after {
     left: 50%;
     background: #0a8276;
@@ -15,8 +30,20 @@ h1.styled:after, h2.styled:after, h3.styled:after {
     margin: 0;
     padding: 0
 }
+.quick-analytics a {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Mengatur jarak antara baris */
+}
 
-h6, p {
+.quick-analytics i {
+    margin-right: 10px; /* Jarak antara icon dan teks */
+}
+
+.stat-count {
+    margin-right: 5px; /* Jarak antara angka dan nama model */
+}
+    h6, p {
     margin-bottom: .2rem
 }
 

@@ -1,0 +1,35 @@
+﻿@using System.Text
+@{
+    var breadcrumbBuilder = new StringBuilder();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var title = ViewData["Title"]?.ToString();
+
+    // Tidak menampilkan breadcrumb jika berada di halaman Dashboard (Home/Index)
+    if (controller != "Home" || action != "Index")
+    {
+        if (!string.IsNullOrEmpty(controller))
+        {
+            breadcrumbBuilder.Append($"<li class='breadcrumb-item'><a href='/{controller}/Index'>Home</a></li>");
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                breadcrumbBuilder.Append($"<li class='breadcrumb-item'><a href='/{controller}'>{title}</a></li>");
+            }
+
+            if (!string.IsNullOrEmpty(action) && action != "Index")
+            {
+                breadcrumbBuilder.Append($"<li class='breadcrumb-item active' aria-current='page'>{action}</li>");
+            }
+        }
+    }
+}
+
+@if (breadcrumbBuilder.Length > 0)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb gutters py-2" style="margin-left: 0rem;">
+            @Html.Raw(breadcrumbBuilder.ToString())
+        </ol>
+    </nav>
+}

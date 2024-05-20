@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.AssetRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Asset Requests";
 }
 
 <div class="row gutters justify-content-center">
@@ -15,6 +15,9 @@
                 </div>
                 <hr class="m-0" />
                 <div class="card-body">
+                    <!-- Breadcrumb -->
+                    <partial name="_Breadcrumb" />
+                    <!-- Toolbar -->
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="row gutters ">
                         <div class="col-6">

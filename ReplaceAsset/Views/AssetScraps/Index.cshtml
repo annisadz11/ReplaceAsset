@@ -1,19 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Scrap Asset Replacement";
+    ViewData["Title"] = "Asset Scraps";
 }
 
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
+@* 
+<style>
+    #reportrange {
+        position: relative;
+        border: none;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+    }
 
+    #reportrange .icon-chevron-down {
+        margin-left: 5px;
+    }
+</style> *@
 <div class="row gutters mt-4">
     <div class="card">
         <div class="card-header text-center" style="font-size: 1.00rem;">Asset Scrap Form</div>
         <hr class="m-0" />
         <div class="card-body">
+            <!-- Breadcrumb -->
+            <partial name="_Breadcrumb" />
+            <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
-                    <a class="btn btn-primary " asp-action="Create">Add Data Scrap</a>
+                    <a class="btn btn-primary" asp-action="Create">Add Data Scrap</a>
                 </div>
+                @* <div class="btn-group me-2">
+                    <a href="#" id="reportrange" style="background-color: transparent; cursor: pointer; padding: 5px 10px; display: inline-block;">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span class="date-range-text"></span>
+                        <i class="icon-chevron-down"></i>
+                    </a>
+                </div> *@
             </div>
             <table id="table"
                    data-toggle="table"
@@ -51,14 +74,14 @@
         </div>
     </div>
 </div>
-
-@section Scripts 
+@section Scripts
 {
     <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
+    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <script>
-        function statusFormatter(value, row, index) {
+        function statusFormatter(value, row) {
             if (value) {
                 return '<span class="badge rounded-pill text-bg-success">Done Scrap</span>';
             } else {
@@ -92,54 +115,31 @@
             });
         }
 
-        $(function () {
-            var $table = $('#table');
+        var notyf = new Notyf({
+            position: {
+                x: 'center',
+                y: 'top',
+            },
+            duration: 3000,
+            dismissible: true,
+            types: [
+                {
+                    type: 'success',
+                    background: 'green',
+                    icon: false
+                },
+                {
+                    type: 'error',
+                    background: 'red',
+                    icon: false
+                }
+            ]
+        });
 
-            // Periksa apakah tabel sudah diinisialisasi sebelumnya
-            if (!$table.data('bootstrap.table')) {
-                $table.bootstrapTable({
-                    url: '@Url.Action("GetData", "AssetScraps")',
-                    pageSize: 50,
-                    columns: [
-                        {
-                            field: 'type',
-                            title: 'Type',
-                            sortable: true,
-                            width: 100
-                        },
-                        {
-                            field: 'serialNumber',
-                            title: 'Serial Number',
-                            sortable: true,
-                            width: 150
-                        },
-                        {
-                            field: 'location',
-                            title: 'Location',
-                            sortable: true,
-                            width: 150
-                        },
-                        {
-                            field: 'dateInput',
-                            title: 'Date Input',
-                            sortable: true,
-                            width: 150
-                        },
-                        {
-                            field: 'validationScrap',
-                            title: 'Validation Scrap',
-                            sortable: true,
-                            formatter: 'statusFormatter',
-                            width: 150
-                        },
-                        {
-                            field: 'actions',
-                            title: 'Actions',
-                            formatter: 'actionFormatter',
-                            width: 100
-                        }
-                    ]
-                });
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                notyf.success(successMessage);
             }
         });
     </script>

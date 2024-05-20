@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.ComponentAssetReplacement
 
 @{
-    ViewData["Title"] = "Details Component Asset Replacement";
+    ViewData["Title"] = "Component Asset Replacements";
 }
 
 <div class="row gutters justify-content-center">
@@ -12,6 +12,9 @@
             </div>
             <hr class="m-0" />
             <div class="card-body">
+                <!-- Breadcrumb -->
+                <partial name="_Breadcrumb" />
+                <!-- Toolbar -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -35,10 +38,6 @@
                             <label>Justify</label>
                             <textarea class="form-control" rows="3" readonly>@Model.AssetRequest.Justify</textarea>
                         </div>
-                        <div class="form-group text-center">
-                            <label>Usage Location</label>
-                            <input type="text" class="form-control" value="@Model.AssetRequest.UsageLocation" readonly>
-                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -46,8 +45,8 @@
                             <input type="text" class="form-control" value="@Model.AssetRequest.Baseline" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Validation Replace</label>
-                            <input type="text" class="form-control" value="@Model.ValidationReplace" readonly>
+                            <label>Usage Location</label>
+                            <input type="text" class="form-control" value="@Model.AssetRequest.UsageLocation" readonly>
                         </div>
                         <div class="form-group">
                             <label>Component Replace Date</label>
@@ -62,6 +61,20 @@
                             <textarea class="form-control" rows="3" readonly>@Model.AssetRequest.Reason</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Validation Replace</label>
+                        <div class="input-group justify-content-center">
+                            @if (!Model.ValidationReplace)
+                            {
+                                <span class="form-control badge badge-secondary">Pending</span>
+                            }
+                            else
+                            {
+                                <span class="form-control badge badge-success">Done Replaced</span>
+                            }
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="card-footer text-center">

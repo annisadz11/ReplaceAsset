@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.AssetRequest
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Asset Requests";
 }
 <div class="row gutters justify-content-center">
     <div class="col-lg-8 col-md-10">
@@ -11,6 +11,9 @@
             </div>
             <hr class="m-0" />
             <div class="card-body">
+                <!-- Breadcrumb -->
+                <partial name="_Breadcrumb" />
+                <!-- Toolbar -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">

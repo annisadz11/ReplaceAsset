@@ -103,60 +103,6 @@ namespace ReplaceAsset.Controllers
             }
         }
 
-        /*  [HttpPost]
-          public async Task<IActionResult> Approve(int id, string justify, string typeReplace)
-          {
-              var assetRequest = await _context.AssetRequest.FindAsync(id);
-
-              if (assetRequest == null)
-              {
-                  return NotFound();
-              }
-
-              assetRequest.Status = true;
-              assetRequest.Justify = justify;
-              assetRequest.TypeReplace = typeReplace;
-              assetRequest.ApprovalDate = DateTime.Now;
-
-              if (typeReplace == "NewAssetReplacement")
-              {
-                  var newAssetReplacement = new NewAssetReplacement
-                  {
-                      AssetRequestId = assetRequest.Id,
-  *//*                    Name = assetRequest.Name ?? string.Empty,
-  *//*                    NewType = string.Empty, // Menyediakan nilai default (string kosong)
-                      NewSerialNumber = string.Empty, // Menyediakan nilai default (string kosong)
-
-                  };
-                  _context.NewAssetReplacement.Add(newAssetReplacement);
-              }
-              else if (typeReplace == "ComponentAssetReplacement")
-              {
-                  var componentAssetReplacement = new ComponentAssetReplacement
-                  {
-
-                      AssetRequestId = assetRequest.Id,
-  *//*                    Name = assetRequest.Name ?? string.Empty
-  *//*                };
-                  _context.ComponentAssetReplacement.Add(componentAssetReplacement);
-              }
-
-              try
-              {
-                  await _context.SaveChangesAsync();
-                  return Json(new { success = true, message = "Asset request approved successfully!" });
-              }
-              catch (DbUpdateException ex)
-              {
-                  // Log the exception details
-                  Console.WriteLine(ex.ToString());
-                  return Json(new { success = false, message = "Error approving the request: " + (ex.InnerException?.Message ?? "No additional details available.") });
-              }
-          }
-
-  */
-
-
         //REJECT MANAGER
         [HttpPost]
         public async Task<IActionResult> Reject(int id, string justify)

@@ -16,7 +16,9 @@
 	<link href="~/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 	<!--Notyf-->
 	<link href="~/vendor/notyf/notyf.min.css" rel="stylesheet" />
-
+	<!--Daterange CSS-->
+	<!-- Daterangepicker CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 	<style>
 		.page-wrapper {
@@ -27,18 +29,35 @@
 			background-attachment: fixed;
 		}
 
-		h2 {
-			color: #000; /* Warna teks abu abu */
-			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);/* Bayangan teks untuk kontras */
+		h2, h4 {
+			color: #343a40; /* Warna font yang tidak mencolok (abu-abu tua) */
+			font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif, Tahoma, Geneva, Verdana, sans-serif;
 			padding-top: 3px; /* Padding atas */
 			padding-bottom: 3px; /* Padding bawah */
 		}
+
+		.time-window-table {
+			width: auto; /* Mengatur lebar tabel agar sesuai konten */
+			border-collapse: collapse; /* Menghilangkan border jarak antar sel */
+			margin: 0 auto; /* Menjadikan tabel berada di tengah */
+		}
+
+			.time-window-table td {
+				padding: 8px 15px; /* Menambahkan padding pada sel */
+				font-family: 'Source Sans 3', Tahoma, Geneva, Verdana, sans-serif;
+				color: #000; /* Warna font hitam */
+				font-size: 0,50rem; /* Ukuran font diperbesar */
+				border: 1px solid #dee2e6; /* Border tipis untuk sel */
+			}
+		
 	</style>
+
 
 </head>
 
 
 <body>
+
 	<!-- Page wrapper start -->
 	<div class="page-wrapper">
 
@@ -115,7 +134,10 @@
 	<script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 	<!--Notyf-->
 	<script src="~/vendor/notyf/notyf.min.js"></script>
-
+	<!-- Moment.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+	<!-- Daterangepicker JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 </body>
 </html>

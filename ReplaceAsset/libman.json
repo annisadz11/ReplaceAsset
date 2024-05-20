@@ -5,6 +5,14 @@
     {
       "library": "sweetalert2@11.11.0",
       "destination": "wwwroot/vendor/sweetalert2/"
+    },
+    {
+      "library": "bootstrap-daterangepicker@3.0.5",
+      "destination": "wwwroot/vendor/bootstrap-daterangepicker/"
+    },
+    {
+      "library": "apexcharts@3.49.1",
+      "destination": "wwwroot/vendor/apexcharts/"
     }
   ]
 }
