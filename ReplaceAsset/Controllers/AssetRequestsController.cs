@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
+    [Authorize(Policy = "UserAdmin")]
+
     public class AssetRequestsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -39,7 +41,6 @@ namespace ReplaceAsset.Controllers
                     }
                 }*/
 
-        [Authorize(Roles = "UserAdmin")]
 
         // Endpoint untuk menghitung data
         [HttpGet]
@@ -111,8 +112,9 @@ namespace ReplaceAsset.Controllers
 			return Json(requests);
 		}
 
-		// GET: AssetRequest
-		public IActionResult Index()
+
+        // GET: AssetRequest
+        public IActionResult Index()
         {
             return View();
         }

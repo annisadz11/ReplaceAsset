@@ -10,6 +10,7 @@ using MailKit.Net.Smtp;
 using System.Threading.Tasks;
 using ReplaceAsset.Data;
 using ReplaceAsset.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
