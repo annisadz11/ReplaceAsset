@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MailKit.Net.Smtp;
 using ReplaceAsset.Data;
 using ReplaceAsset.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
@@ -18,6 +21,25 @@ namespace ReplaceAsset.Controllers
         {
             _context = context;
         }
+
+        /*        private async Task SendEmailAsync(string to, string subject, string body)
+                {
+                    var emailMessage = new MimeMessage();
+                    emailMessage.From.Add(new MailboxAddress("Asset Management", "your-email@example.com"));
+                    emailMessage.To.Add(new MailboxAddress("", to));
+                    emailMessage.Subject = subject;
+                    emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = body };
+
+                    using (var client = new SmtpClient())
+                    {
+                        await client.ConnectAsync("smtp.your-email-provider.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                        await client.AuthenticateAsync("your-email@example.com", "your-email-password");
+                        await client.SendAsync(emailMessage);
+                        await client.DisconnectAsync(true);
+                    }
+                }*/
+
+        [Authorize(Roles = "UserAdmin")]
 
         // Endpoint untuk menghitung data
         [HttpGet]
@@ -162,6 +184,12 @@ namespace ReplaceAsset.Controllers
 
                 _context.Add(assetRequest);
                 await _context.SaveChangesAsync();
+
+/*                // Kirim email ke manager
+                var subject = "New Asset Replacement Request";
+                var body = $"There is a new replacement request from {assetRequest.Name}. Please review and approve or reject.";
+*//*                await SendEmailAsync("manager@example.com", subject, body);
+*//**/
                 TempData["SuccessMessage"] = "Asset request created successfully!";
                 return RedirectToAction(nameof(Index));
             }

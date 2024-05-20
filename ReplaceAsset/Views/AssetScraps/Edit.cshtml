@@ -80,19 +80,28 @@
 
                 var formData = $(this).serialize();
                 $.ajax({
-                    url: '@Url.Action("EditPost", "AssetScrap", new { id = Model.Id })',
+                    url: '@Url.Action("Edit", "AssetScrap", new { id = Model.Id })',
                     type: 'POST',
                     data: formData,
                     success: function (data) {
                         if (data.success) {
-                            Swal.fire({
-                                title: 'Success',
-                                text: data.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            }).then(function () {
-                                window.location.href = '@Url.Action("Index", "AssetScrap")'; // Redirect to Index after successful update
+                            var notyf = new Notyf({
+                                position: {
+                                    x: 'center',
+                                    y: 'top',
+                                },
+                                duration: 3000,
+                                dismissible: true,
+                                types: [
+                                    {
+                                        type: 'success',
+                                        background: 'green',
+                                        icon: false
+                                    }
+                                ]
                             });
+                            notyf.success(data.message);
+                            window.location.href = '@Url.Action("Index", "AssetScrap")'; // Redirect to Index after successful update
                         } else {
                             Swal.fire({
                                 title: 'Error',
@@ -114,4 +123,4 @@
             });
         });
     </script>
-}
+}}

@@ -25,5 +25,7 @@ namespace ReplaceAsset.Models
 
 		// Navigasi properti ke ComponentAssetReplacement
 		public ComponentAssetReplacement? ComponentAssetReplacement { get; set; }
+
+		public string? Username { get; set; }
 	}
 }

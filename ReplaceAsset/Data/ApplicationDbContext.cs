@@ -15,6 +15,13 @@ namespace ReplaceAsset.Data
 		public DbSet<ComponentAssetReplacement> ComponentAssetReplacement { get; set; }
 		public DbSet<NewAssetReplacement> NewAssetReplacement { get; set; }
         public DbSet<NewHire> NewHire { get; set; }
+		public DbSet<UserAdmin> UserAdmins { get; set; }
+        public DbSet<UserEmployee> UserEmployees { get; set; }
+
+        public DbSet<UserIntern> UserInterns { get; set; }
+
+        public DbSet<UserManagerIT> UserManagerITs { get; set; }
+
 
     }
 }

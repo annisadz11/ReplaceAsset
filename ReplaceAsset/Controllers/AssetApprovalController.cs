@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MailKit.Net.Smtp;
+using System.Threading.Tasks;
 using ReplaceAsset.Data;
 using ReplaceAsset.Models;
 
@@ -19,9 +22,29 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
+
+/*        private async Task SendEmailAsync(string to, string subject, string body)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Asset Management", "your-email@example.com"));
+            emailMessage.To.Add(new MailboxAddress("", to));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = body };
+
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync("smtp.your-email-provider.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync("your-email@example.com", "your-email-password");
+                await client.SendAsync(emailMessage);
+                await client.DisconnectAsync(true);
+            }
+        }
+*/
+
         // GET: AssetRequest
         public IActionResult Index()
         {
+
             return View();
         }
 
@@ -93,6 +116,11 @@ namespace ReplaceAsset.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                // Kirim email ke user
+                var subject = "Asset Replacement Request Approved";
+                var body = $"Your asset replacement request has been approved. Justification: {justify}.";
+/*                await SendEmailAsync("user@example.com", subject, body);
+*/
                 return Json(new { success = true, message = "Asset request approved successfully!" });
             }
             catch (DbUpdateException ex)
@@ -119,6 +147,11 @@ namespace ReplaceAsset.Controllers
             _context.Update(assetRequest);
             await _context.SaveChangesAsync();
 
+            // Kirim email ke user
+            var subject = "Asset Replacement Request Rejected";
+            var body = $"Your asset replacement request has been rejected. Justification: {justify}.";
+/*            await SendEmailAsync("user@example.com", subject, body);
+*/
 
             return Json(new { success = true, message = "Asset request rejected successfully!" });
         }
