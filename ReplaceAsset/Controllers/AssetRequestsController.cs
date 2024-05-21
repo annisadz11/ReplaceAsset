@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
-    [Authorize(Policy = "UserAdmin")]
+
+    
 
     public class AssetRequestsController : Controller
     {
@@ -112,7 +113,7 @@ namespace ReplaceAsset.Controllers
 			return Json(requests);
 		}
 
-
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         // GET: AssetRequest
         public IActionResult Index()
         {

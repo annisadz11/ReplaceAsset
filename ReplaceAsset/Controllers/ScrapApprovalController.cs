@@ -30,7 +30,8 @@ namespace ReplaceAsset.Controllers
         public IActionResult GetData()
         {
             var pendingScraps = _context.AssetScrap
-                .Where(a => !a.ValidationScrap) // Menampilkan hanya yang pending (ValidationScrap == false)
+
+                .Where(a => !a.ValidationScrap == null) // Menampilkan hanya yang pending (ValidationScrap == false)
                 .Select(a => new
                 {
                     id = a.Id,
