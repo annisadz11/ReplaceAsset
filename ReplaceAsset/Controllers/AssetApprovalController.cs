@@ -23,24 +23,7 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-
-/*        private async Task SendEmailAsync(string to, string subject, string body)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Asset Management", "your-email@example.com"));
-            emailMessage.To.Add(new MailboxAddress("", to));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = body };
-
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync("smtp.your-email-provider.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync("your-email@example.com", "your-email-password");
-                await client.SendAsync(emailMessage);
-                await client.DisconnectAsync(true);
-            }
-        }
-*/
+        [Authorize(Roles = "UserManagerIT,UserAdmin")]
 
         // GET: AssetRequest
         public IActionResult Index()

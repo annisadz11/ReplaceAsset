@@ -25,24 +25,6 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-        /*        private async Task SendEmailAsync(string to, string subject, string body)
-                {
-                    var emailMessage = new MimeMessage();
-                    emailMessage.From.Add(new MailboxAddress("Asset Management", "your-email@example.com"));
-                    emailMessage.To.Add(new MailboxAddress("", to));
-                    emailMessage.Subject = subject;
-                    emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = body };
-
-                    using (var client = new SmtpClient())
-                    {
-                        await client.ConnectAsync("smtp.your-email-provider.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                        await client.AuthenticateAsync("your-email@example.com", "your-email-password");
-                        await client.SendAsync(emailMessage);
-                        await client.DisconnectAsync(true);
-                    }
-                }*/
-
-
         // Endpoint untuk menghitung data
         [HttpGet]
         public IActionResult GetDashboardData()
@@ -134,10 +116,10 @@ namespace ReplaceAsset.Controllers
                     serialNumber = g.SerialNumber,
                     baseline = g.Baseline,
                     usageLocation = g.UsageLocation,
-                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy") : null,
+                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy  HH:mm") : null,
                     reason = g.Reason,
                     status = g.Status,
-                    approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy") : null,
+                    approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
                     justify = g.Justify,
                     typeReplace = g.TypeReplace,
                 }).ToList();
@@ -145,7 +127,7 @@ namespace ReplaceAsset.Controllers
             return Json(new { rows = AssetRequests });
         }
 
-
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // GET: AssetRequests/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -164,6 +146,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserEmployee")]
         // GET: AssetRequests/Create
         public IActionResult Create()
         {
@@ -199,6 +182,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // GET: AssetRequests/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -215,6 +199,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // POST: AssetRequests/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -278,6 +263,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // GET: AssetRequests/Delete/5
         public async Task<IActionResult> Delete(int? id, string handler)
         {
