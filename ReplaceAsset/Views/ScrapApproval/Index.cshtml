@@ -27,7 +27,7 @@
                    data-show-columns="true"
                    data-buttons="[]"
                    data-key-events="true"
-                   data-url="@Url.Action("GetData", "AssetScraps")"
+                   data-url="@Url.Action("GetData", "ScrapApproval")"
                    data-pagination="true"
                    data-side-pagination="server"
                    data-show-columns-toggle-all="true"
@@ -66,10 +66,12 @@
                 return '<span class="badge badge-secondary">Pending</span>';
             }
         }
+
         function actionFormatter(value, row, index) {
-            var updateBtn = '<button type="button" class="btn btn-sm btn-warning" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+            var updateBtn = '<button type="button" class="btn btn-sm btn-warning" onclick="showUpdateModal(' + row.id + ')">Approve</button>';
             return updateBtn;
         }
+
         function showUpdateModal(id) {
             Swal.fire({
                 title: 'Approve Scrap Request',
@@ -88,7 +90,7 @@
                         data: { id: id },
                         success: function (data) {
                             // Jika berhasil, reload tabel
-                            $('#table').bootstrapTable('refresh');
+                            $('#table').bootstrapTable('refresh'); // Pastikan ID tabel adalah #table
                             Swal.fire(
                                 'Approved!',
                                 'The scrap request has been approved.',
@@ -108,4 +110,3 @@
         }
     </script>
 }
-

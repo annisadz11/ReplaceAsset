@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +28,9 @@ namespace ReplaceAsset.Controllers
 			return Json(totalScraps);
 		}
 
-
-		// GET: AssetScraps
-		public IActionResult Index()
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        // GET: AssetScraps
+        public IActionResult Index()
         {
             return View();
         }
@@ -45,13 +46,15 @@ namespace ReplaceAsset.Controllers
                     type = a.Type,
                     serialNumber = a.SerialNumber,
                     location = a.Location,
-                    dateInput = a.DateInput.HasValue ? a.DateInput.Value.ToString("dd MMM yyyy") : null,
+                    dateInput = a.DateInput.HasValue ? a.DateInput.Value.ToString("dd MMM yyyy HH:mm") : null,
                     validationScrap = a.ValidationScrap
                 })
                 .ToList();
 
             return Json(new { rows = assetScraps });
         }
+
+        [Authorize(Roles = "UserAdmin,UserIntern")]
         // GET: AssetScraps/Create
         public IActionResult Create()
         {
@@ -73,6 +76,7 @@ namespace ReplaceAsset.Controllers
             return View(assetScrap);
         }
 
+        [Authorize(Roles = "UserAdmin,UserIntern")]
         // GET: AssetScraps/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -99,24 +103,23 @@ namespace ReplaceAsset.Controllers
                 return Json(new { success = false, message = "ID mismatch." });
             }
 
-            var existingAssetScrap = await _context.AssetScrap.FindAsync(id);
-
-            if (existingAssetScrap == null)
-            {
-                return Json(new { success = false, message = "Asset Scrap not found." });
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Jika existingAssetScrap.ValidationScrap adalah true, pertahankan nilainya
-                    if (existingAssetScrap.ValidationScrap)
+                    var existingAssetScrap = await _context.AssetScrap.FindAsync(id);
+
+                    if (existingAssetScrap == null)
                     {
-                        assetScrap.ValidationScrap = true;
+                        return Json(new { success = false, message = "Asset Scrap not found." });
                     }
 
-                    _context.Update(assetScrap);
+                    // Update hanya properti yang berubah
+                    existingAssetScrap.Type = assetScrap.Type;
+                    existingAssetScrap.SerialNumber = assetScrap.SerialNumber;
+                    existingAssetScrap.Location = assetScrap.Location;
+                    existingAssetScrap.DateInput = assetScrap.DateInput;
+
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Asset Scrap updated successfully!" });
                 }
@@ -127,14 +130,18 @@ namespace ReplaceAsset.Controllers
                         return Json(new { success = false, message = "Asset Scrap not found after concurrency check." });
                     }
                     else
-                        throw;
+                    {
+                        return Json(new { success = false, message = "Concurrency issue occurred while updating the Asset Scrap." });
+                    }
                 }
             }
 
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return Json(new { success = false, message = errors.Any() ? string.Join(", ", errors) : "Validation error." });
         }
-        public async Task<IActionResult> Details(int? id)
+
+      
+public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -151,6 +158,7 @@ namespace ReplaceAsset.Controllers
             return View(assetScrap);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // GET: AssetRequests/Delete/5
         public async Task<IActionResult> Delete(int? id, string handler)
         {

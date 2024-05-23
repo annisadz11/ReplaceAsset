@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +28,10 @@ namespace ReplaceAsset.Controllers
 			return Json(totalNewHires);
 		}
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
-		// GET: NewHires
-		public async Task<IActionResult> Index()
+        // GET: NewHires
+        public async Task<IActionResult> Index()
         {
             return View(await _context.NewHire.ToListAsync());
         }
@@ -48,7 +50,7 @@ namespace ReplaceAsset.Controllers
                     serialNumber = a.SerialNumber,
                     device = a.Device,
                     modelAsset = a.ModelAsset,
-                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy") : null,
+                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy HH:mm") : null,
                     statusCompleted = a.StatusCompleted,
                     headsetGiven = a.HeadsetGiven,
                     laptopGiven = a.LaptopGiven,
@@ -60,6 +62,9 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { rows = newHire });
         }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+
         // GET: NewHires/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,6 +81,7 @@ namespace ReplaceAsset.Controllers
             return View(newHire);
         }
 
+        [Authorize(Roles = "UserIntern,UserAdmin")]
 
         // GET: NewHires/Create
         public IActionResult Create()
@@ -98,6 +104,8 @@ namespace ReplaceAsset.Controllers
             }
             return View(newHire);
         }
+
+        [Authorize(Roles = "UserIntern,UserAdmin")]
         // GET: NewHires/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReplaceAsset.Migrations
 {
     /// <inheritdoc />
-    public partial class AddModelToDatabase : Migration
+    public partial class NEW : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,7 +79,7 @@ namespace ReplaceAsset.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserAdmin",
+                name: "UserAdmins",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -90,7 +90,7 @@ namespace ReplaceAsset.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserAdmin", x => x.Id);
+                    table.PrimaryKey("PK_UserAdmins", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,7 +212,7 @@ namespace ReplaceAsset.Migrations
                 name: "NewHire");
 
             migrationBuilder.DropTable(
-                name: "UserAdmin");
+                name: "UserAdmins");
 
             migrationBuilder.DropTable(
                 name: "UserEmployees");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ namespace ReplacementAsset.Controllers
             return Json(new { totalNewAssetReplacements });
 
         }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: NewAssetReplacement
         public IActionResult Index()
@@ -52,11 +55,11 @@ namespace ReplacementAsset.Controllers
                     assetRequestJustify = n.AssetRequest.Justify,
                     assetRequestTypeReplace = n.AssetRequest.TypeReplace,
                     assetRequestApprovalDate = n.AssetRequest.ApprovalDate.HasValue ?
-                                       n.AssetRequest.ApprovalDate.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null,
+                                       n.AssetRequest.ApprovalDate.Value.ToString("dd MMMM yyyy HH:mm", new System.Globalization.CultureInfo("id-ID")) : null,
                     newType = n.NewType ?? "",
                     newSerialNumber = n.NewSerialNumber ?? "",
                     dateReplace = n.DateReplace.HasValue ?
-                          n.DateReplace.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null,
+                          n.DateReplace.Value.ToString("dd MMMM yyyy HH:mm", new System.Globalization.CultureInfo("id-ID")) : null,
                 })
         .ToList();
 
@@ -74,7 +77,7 @@ namespace ReplacementAsset.Controllers
                     id = n.Id,
                     newType = n.NewType,
                     newSerialNumber = n.NewSerialNumber,
-                    dateReplace = n.DateReplace.HasValue ? n.DateReplace.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) : null
+                    dateReplace = n.DateReplace.HasValue ? n.DateReplace.Value.ToString("dd MMMM yyyy HH:mm", new System.Globalization.CultureInfo("id-ID")) : null
                 })
         .FirstOrDefaultAsync();
 
@@ -85,6 +88,7 @@ namespace ReplacementAsset.Controllers
 
             return Ok(newAssetReplacement);
         }
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // POST: NewAssetReplacements/Create
         // Create method to update NewAssetReplacement details
@@ -115,6 +119,7 @@ namespace ReplacementAsset.Controllers
                 return Json(new { success = false, message = "Error updating the request." });
             }
         }
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: NewAssetReplacements/Details/5
         public async Task<IActionResult> Details(int? id)

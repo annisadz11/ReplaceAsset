@@ -13,9 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
-
-    
-
     public class AssetRequestsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -127,7 +124,7 @@ namespace ReplaceAsset.Controllers
             return Json(new { rows = AssetRequests });
         }
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         // GET: AssetRequests/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -146,7 +143,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserEmployee")]
+        [Authorize(Roles = "UserIntern,UserAdmin,UserEmployee")]
         // GET: AssetRequests/Create
         public IActionResult Create()
         {
@@ -154,8 +151,6 @@ namespace ReplaceAsset.Controllers
         }
 
         // POST: AssetRequests/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Departement,Type,SerialNumber,Baseline,UsageLocation,RequestDate,Reason")] AssetRequest assetRequest)
@@ -170,19 +165,13 @@ namespace ReplaceAsset.Controllers
 
                 _context.Add(assetRequest);
                 await _context.SaveChangesAsync();
-
-/*                // Kirim email ke manager
-                var subject = "New Asset Replacement Request";
-                var body = $"There is a new replacement request from {assetRequest.Name}. Please review and approve or reject.";
-*//*                await SendEmailAsync("manager@example.com", subject, body);
-*//**/
                 TempData["SuccessMessage"] = "Asset request created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             return View(assetRequest);
         }
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [Authorize(Roles = "UserAdmin,UserIntern")]
         // GET: AssetRequests/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -199,7 +188,6 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // POST: AssetRequests/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -12,8 +12,8 @@ using ReplaceAsset.Data;
 namespace ReplaceAsset.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240520165900_AddTable")]
-    partial class AddTable
+    [Migration("20240522133049_NEW")]
+    partial class NEW
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

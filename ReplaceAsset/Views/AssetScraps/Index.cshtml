@@ -6,17 +6,7 @@
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
 @* 
 <style>
-    #reportrange {
-        position: relative;
-        border: none;
-        background-color: transparent;
-        display: flex;
-        align-items: center;
-    }
 
-    #reportrange .icon-chevron-down {
-        margin-left: 5px;
-    }
 </style> *@
 <div class="row gutters mt-4">
     <div class="card">
@@ -30,13 +20,6 @@
                 <div class="btn-group me-2">
                     <a class="btn btn-primary" asp-action="Create">Add Data Scrap</a>
                 </div>
-                @* <div class="btn-group me-2">
-                    <a href="#" id="reportrange" style="background-color: transparent; cursor: pointer; padding: 5px 10px; display: inline-block;">
-                        <i class="fa fa-calendar"></i>&nbsp;
-                        <span class="date-range-text"></span>
-                        <i class="icon-chevron-down"></i>
-                    </a>
-                </div> *@
             </div>
             <table id="table"
                    data-toggle="table"

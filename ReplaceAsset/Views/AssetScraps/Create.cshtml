@@ -27,14 +27,14 @@
                                 <span asp-validation-for="Type" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="SerialNumber" class="control-label"></label>
+                                <label class="control-label">Serial Number</label>
                                 <input asp-for="SerialNumber" class="form-control" />
                                 <span asp-validation-for="SerialNumber" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Location" class="control-label"></label>
                                 <select asp-for="Location" class="form-control">
-                                    <option value="">-- Select Usage Location --</option>
+                                    <option value="">-- Select Location Asset Scrap--</option>
                                     <option value="BAT1BLOCK1">BAT 1 BLOCK 1</option>
                                     <option value="BAT1BLOCK2">BAT 1 BLOCK 2</option>
                                     <option value="BAT1BLOCK3">BAT 1 BLOCK 3</option>
@@ -51,15 +51,10 @@
                                 <span asp-validation-for="Location" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="DateInput" class="control-label"></label>
-                                <input asp-for="DateInput" class="form-control" type="date" />
+                                <label class="control-label">Date Input</label>
+                                <input asp-for="DateInput" class="form-control"  />
                                 <span asp-validation-for="DateInput" class="text-danger"></span>
                             </div>
-                           @*  <div class="form-group form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" asp-for="ValidationScrap" /> @Html.DisplayNameFor(model => model.ValidationScrap)
-                                </label>
-                            </div> *@
                             <div class="container d-flex justify-content-center">
                                 <input type="submit" value="Create" class="btn btn-primary" style="margin: 0 5px;" />
                                 <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>

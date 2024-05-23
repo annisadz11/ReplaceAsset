@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,10 @@ namespace ReplaceAsset.Controllers
 			var totalComponentReplacements = _context.ComponentAssetReplacement.Count();
 			return Json(totalComponentReplacements);
 		}
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
-		// GET: ComponentAssetReplacements
-		public IActionResult Index()
+        // GET: ComponentAssetReplacements
+        public IActionResult Index()
         {
             var componentAssetReplacements = _context.ComponentAssetReplacement.Include(n => n.AssetRequest).ToList();
             return View(componentAssetReplacements);
@@ -49,16 +51,16 @@ namespace ReplaceAsset.Controllers
                     assetRequestReason = n.AssetRequest.Reason,
                     assetRequestJustify = n.AssetRequest.Justify,
                     assetRequestTypeReplace = n.AssetRequest.TypeReplace,
-                    assetRequestApprovalDate = n.AssetRequest.ApprovalDate.HasValue ? n.AssetRequest.ApprovalDate.Value.ToString("dd MMM yyyy") : null,
+                    assetRequestApprovalDate = n.AssetRequest.ApprovalDate.HasValue ? n.AssetRequest.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
                     name = n.Name,
                     validationReplace = n.ValidationReplace,
-                    componentReplaceDate = n.ComponentReplaceDate.HasValue ? n.ComponentReplaceDate.Value.ToString("dd MMM yyyy") : null
+                    componentReplaceDate = n.ComponentReplaceDate.HasValue ? n.ComponentReplaceDate.Value.ToString("dd MMM yyyy HH:mm") : null
                 })
                 .ToList();
 
             return Json(new { rows = componentAssetReplacements });
         }
-
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         //UPDATEMODAL
         [HttpPost]
         public async Task<IActionResult> UpdateComponentReplacement(int id, DateTime? componentReplaceDate)
@@ -89,6 +91,7 @@ namespace ReplaceAsset.Controllers
                 return Json(new { success = false, message = "Error updating component replacement: " + ex.Message });
             }
         }
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: ComponentAssetReplacements/Details/5
         public async Task<IActionResult> Details(int? id)

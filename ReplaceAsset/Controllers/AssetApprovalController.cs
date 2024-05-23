@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ReplaceAsset.Controllers
 {
+    [Authorize(Roles = "UserManagerIT,UserAdmin")]
+
     public class AssetApprovalController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,8 +24,6 @@ namespace ReplaceAsset.Controllers
         {
             _context = context;
         }
-
-        [Authorize(Roles = "UserManagerIT,UserAdmin")]
 
         // GET: AssetRequest
         public IActionResult Index()
@@ -47,10 +47,10 @@ namespace ReplaceAsset.Controllers
                     serialNumber = g.SerialNumber,
                     baseline = g.Baseline,
                     usageLocation = g.UsageLocation,
-                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy") : null,
+                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy HH:mm") : null,
                     reason = g.Reason,
                     status = g.Status,
-                    approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy") : null,
+                    approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
                     justify = g.Justify,
                     typeReplace = g.TypeReplace,
                 }).ToList();

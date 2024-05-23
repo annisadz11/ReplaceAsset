@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ReplaceAsset.Models;
 
 namespace ReplaceAsset.Controllers
 {
+    [Authorize(Roles = "UserManagerIT,UserAdmin")]
     public class NewHireApprovalController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -47,7 +49,7 @@ namespace ReplaceAsset.Controllers
                     serialNumber = a.SerialNumber,
                     device = a.Device,
                     modelAsset = a.ModelAsset,
-                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy") : null,
+                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy HH:mm") : null,
                     statusCompleted = a.StatusCompleted,
                     headsetGiven = a.HeadsetGiven,
                     laptopGiven = a.LaptopGiven,
