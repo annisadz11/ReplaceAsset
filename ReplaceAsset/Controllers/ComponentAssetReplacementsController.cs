@@ -60,8 +60,8 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { rows = componentAssetReplacements });
         }
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
-        //UPDATEMODAL
+
+        [Authorize(Roles = "UserAdmin,UserIntern")]
         [HttpPost]
         public async Task<IActionResult> UpdateComponentReplacement(int id, DateTime? componentReplaceDate)
         {
@@ -72,25 +72,25 @@ namespace ReplaceAsset.Controllers
                 return Json(new { success = false, message = "Data not found." });
             }
 
-            // Jika ComponentReplaceDate dan ValidationReplace belum memiliki nilai, baru diupdate
-            if (!componentAssetReplacement.ComponentReplaceDate.HasValue && !componentAssetReplacement.ValidationReplace)
+            if (!componentAssetReplacement.ComponentReplaceDate.HasValue)
             {
                 componentAssetReplacement.ComponentReplaceDate = componentReplaceDate;
                 componentAssetReplacement.ValidationReplace = componentReplaceDate.HasValue;
-            }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Component replacement updated successfully." });
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error updating component replacement: " + ex.Message });
+                }
             }
-            catch (DbUpdateException ex)
-            {
-                // Log detail exception
-                Console.WriteLine(ex.ToString());
-                return Json(new { success = false, message = "Error updating component replacement: " + ex.Message });
-            }
+            return Json(new { success = false, message = "Component already replaced." });
         }
+
+
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: ComponentAssetReplacements/Details/5

@@ -12,15 +12,15 @@ using ReplaceAsset.Data;
 namespace ReplaceAsset.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240522133049_NEW")]
-    partial class NEW
+    [Migration("20240523132854_AddModelToTableDb")]
+    partial class AddModelToTableDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -259,31 +259,6 @@ namespace ReplaceAsset.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAdmins");
-                });
-
-            modelBuilder.Entity("ReplaceAsset.Models.UserEmployee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserEmployees");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.UserIntern", b =>

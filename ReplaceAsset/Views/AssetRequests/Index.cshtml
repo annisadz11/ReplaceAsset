@@ -14,7 +14,10 @@
             <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
-                    <a class="btn btn-primary " asp-action="Create">Add New Request</a>
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee") || User.IsInRole("UserIntern"))
+                    {
+                        <a class="btn btn-primary" asp-action="Create">Add New Request</a>
+                    }
                 </div>
             </div>
             <table id="table"
@@ -43,17 +46,18 @@
                     <tr>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
-                        <th data-field="type" data-sortable="true" data-width="100">Type</th>
-                        <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
-                        <th data-field="baseline" data-sortable="true" data-width="150">Baseline</th>
-                        <th data-field="usageLocation" data-sortable="true" data-width="150">Usage Location</th>
-@*                         <th data-field="reason" data-sortable="true" data-width="300">Reason</th>
+@*                         <th data-field="type" data-sortable="true" data-width="100">Type</th>
+ *@                        <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
+@*                         <th data-field="baseline" data-sortable="true" data-width="150">Baseline</th>
+                         <th data-field="usageLocation" data-sortable="true" data-width="150">Usage Location</th>
+                         <th data-field="reason" data-sortable="true" data-width="300">Reason</th>
                         <th data-field="justify" data-sortable="true" data-width="200">Justify</th>
- *@                        <th data-field="typeReplace" data-sortable="true" data-width="200">Type Replace</th>
+ *@                       <th data-field="typeReplace" data-sortable="true" data-width="200">Type Replace</th>
                         <th data-field="requestDate" data-sortable="true" data-width="150">Request Date</th>
                         <th data-field="status" data-sortable="true" data-formatter="statusFormatter" class="text-center" data-width="150">Status</th>
                         <th data-field="approvalDate" data-sortable="true" data-width="150">Approval Date</th>
-                        <th data-formatter="viewFormatter" class="text-center no-space-three text-nowrap" data-width="250">Actions</th>
+                        <th data-formatter="viewFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+
                     </tr>
                 </thead>
             </table>
@@ -102,21 +106,33 @@
             return statusHtml;
         }
 
+        // Tetapkan variabel di sini untuk menentukan peran pengguna
+        var isAdmin = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin")));
+        var isManagerIT = @Html.Raw(Json.Serialize(User.IsInRole("UserManagerIT")));
+        var isEmployee = @Html.Raw(Json.Serialize(User.IsInRole("UserEmployee")));
+        var isIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserIntern")));
+
         function viewFormatter(value, row, index) {
-            let actions = '';
+            var editUrl = '@Url.Action("Edit", "AssetRequests")' + '/' + row.id;
+            var deleteUrl = '@Url.Action("Delete", "AssetRequests")' + '/' + row.id;
+            var detailsUrl = '@Url.Action("Details", "AssetRequests")' + '/' + row.id;
 
-            // Periksa status permintaan
-            if (row.status === null) {
-                // Permintaan sedang menunggu persetujuan, tampilkan tombol Edit
-                actions += `<a href="/AssetRequests/Edit/${row.id}" class="btn btn-sm btn-info me-1">Edit</a>`;
+            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
+            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
+
+            if (isAdmin) {
+                return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
+            } else if (isManagerIT) {
+                return detailsBtn + ' ' + deleteBtn;
+            } else if (isEmployee) {
+                return detailsBtn + ' ' + editBtn;
+            } else if (isIntern) {
+                return detailsBtn;
             }
-
-            // Selalu tampilkan tombol Details dan Delete
-            actions += `<a href="/AssetRequests/Details/${row.id}" class="btn btn-sm btn-primary">Details</a>
-                                        <a href="/AssetRequests/Delete/${row.id}" class="btn btn-sm btn-danger">Delete</a>`;
-
-            return actions;
+            return detailsBtn;
         }
+
 
         $(function () {
             $('#table').bootstrapTable({

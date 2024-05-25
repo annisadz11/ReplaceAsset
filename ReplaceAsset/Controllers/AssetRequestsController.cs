@@ -10,6 +10,7 @@ using MailKit.Net.Smtp;
 using ReplaceAsset.Data;
 using ReplaceAsset.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ReplaceAsset.Controllers
 {
@@ -99,8 +100,9 @@ namespace ReplaceAsset.Controllers
             return View();
         }
 
-        //API ENDPOINT
+        // API ENDPOINT
         [HttpGet]
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         public IActionResult GetData()
         {
             var AssetRequests = _context.AssetRequest

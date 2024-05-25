@@ -18,7 +18,10 @@
             <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
-                    <a class="btn btn-primary" asp-action="Create">Add Data Scrap</a>
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserIntern"))
+                    {
+                        <a class="btn btn-primary" asp-action="Create">Add New Data Scrap</a>
+                    }
                 </div>
             </div>
             <table id="table"
@@ -72,17 +75,27 @@
                 return '<span class="badge rounded-pill text-bg-secondary">Pending</span>';
             }
         }
+        // Tetapkan variabel di sini untuk menentukan peran pengguna
+        var isAdminOrIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin") || User.IsInRole("UserIntern")));
+        var isManagerIT = @Html.Raw(Json.Serialize(User.IsInRole("UserManagerIT")));
+        var isEmployee = @Html.Raw(Json.Serialize(User.IsInRole("UserEmployee")));
 
         function actionFormatter(value, row, index) {
             var editUrl = '@Url.Action("Edit", "AssetScraps")' + '/' + row.id;
             var deleteUrl = '@Url.Action("Delete", "AssetScraps")' + '/' + row.id;
             var detailsUrl = '@Url.Action("Details", "AssetScraps")' + '/' + row.id;
+
             var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
             var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
-            return editBtn + ' ' + deleteBtn + ' ' + detailsBtn;
-        }
 
+            if (isAdminOrIntern) {
+                return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
+            } else if (isManagerIT) {
+                return detailsBtn + ' ' + deleteBtn;
+            }
+            return detailsBtn;
+        }
         function confirmDelete(id) {
             Swal.fire({
                 title: "Are you sure?",

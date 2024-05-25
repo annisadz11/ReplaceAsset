@@ -88,10 +88,7 @@ namespace ReplacementAsset.Controllers
 
             return Ok(newAssetReplacement);
         }
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
-
-        // POST: NewAssetReplacements/Create
-        // Create method to update NewAssetReplacement details
+        [Authorize(Roles = "UserAdmin,UserIntern")]
         [HttpPost]
         public async Task<IActionResult> Update(int id, string newType, string newSerialNumber, DateTime? dateReplace)
         {
@@ -99,26 +96,30 @@ namespace ReplacementAsset.Controllers
 
             if (newAssetReplacement == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Data not found." });
             }
 
-            newAssetReplacement.NewType = newType;
-            newAssetReplacement.NewSerialNumber = newSerialNumber;
-            newAssetReplacement.DateReplace = dateReplace;
+            // Jika DateReplace belum memiliki nilai, baru diupdate
+            if (!newAssetReplacement.DateReplace.HasValue)
+            {
+                newAssetReplacement.NewType = newType;
+                newAssetReplacement.NewSerialNumber = newSerialNumber;
+                newAssetReplacement.DateReplace = dateReplace;
+            }
 
             try
             {
-                _context.Update(newAssetReplacement);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Update successful!" });
+                return Json(new { success = true, message = "New Asset Replacement updated successfully." });
             }
             catch (DbUpdateException ex)
             {
-                // Log the exception details
+                // Log detail exception
                 Console.WriteLine(ex.ToString());
-                return Json(new { success = false, message = "Error updating the request." });
+                return Json(new { success = false, message = "Error updating New Asset Replacement: " + ex.Message });
             }
         }
+
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: NewAssetReplacements/Details/5

@@ -100,11 +100,6 @@ namespace ReplaceAsset.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                // Kirim email ke user
-                var subject = "Asset Replacement Request Approved";
-                var body = $"Your asset replacement request has been approved. Justification: {justify}.";
-/*                await SendEmailAsync("user@example.com", subject, body);
-*/
                 return Json(new { success = true, message = "Asset request approved successfully!" });
             }
             catch (DbUpdateException ex)
@@ -130,13 +125,6 @@ namespace ReplaceAsset.Controllers
             assetRequest.ApprovalDate = DateTime.Now;
             _context.Update(assetRequest);
             await _context.SaveChangesAsync();
-
-            // Kirim email ke user
-            var subject = "Asset Replacement Request Rejected";
-            var body = $"Your asset replacement request has been rejected. Justification: {justify}.";
-/*            await SendEmailAsync("user@example.com", subject, body);
-*/
-
             return Json(new { success = true, message = "Asset request rejected successfully!" });
         }
 

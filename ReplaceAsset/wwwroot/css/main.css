@@ -96,6 +96,45 @@ body.authentication {
     background: #1b1b1b
 }
 
+.header-menu {
+    padding: 10px 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/*.sidebar-menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar-menu li {
+    padding: 10px 20px;
+    font-size: 15px;
+}*/
+/*
+    .sidebar-menu li a {
+        color: #cfd8dc;
+        text-decoration: none;
+    }
+
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+
+    .sidebar-menu li.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+        .sidebar-menu li.active a {
+            color: #fff;
+        }
+
+            .sidebar-menu li.active a:hover {
+                color: #fff;
+            }
+*/
 #loading-wrapper {
     position: fixed;
     top: 0;
@@ -1016,6 +1055,10 @@ ul.header-tasks li {
 }
 
 @media screen and (max-width: 768px) {
+    .sidebar-wrapper {
+        background-color: #343a40;
+        color: #fff;
+    }
     .page-wrapper .sidebar-wrapper {
         left: -230px
     }

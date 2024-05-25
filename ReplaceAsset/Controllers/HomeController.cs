@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReplaceAsset.Models;
 using System.Diagnostics;
@@ -6,6 +7,7 @@ namespace ReplaceAsset.Controllers
 {
 	public class HomeController : Controller
 	{
+
 		private readonly ILogger<HomeController> _logger;
 
 		public HomeController(ILogger<HomeController> logger)
@@ -13,12 +15,17 @@ namespace ReplaceAsset.Controllers
 			_logger = logger;
 		}
 
-		public IActionResult Index()
-		{
-			return View();
-		}
+        [Authorize]
+        public IActionResult Index()
+        {
+            if (User.IsInRole("UserEmployee"))
+            {
+                return View("IndexEmployee");
+            }
+            return View("Index"); // Default dashboard for UserAdmin, UserManagerIT, UserIntern
+        }
 
-		public IActionResult Privacy()
+        public IActionResult Privacy()
 		{
 			return View();
 		}

@@ -15,7 +15,10 @@
             <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
-                    <a class="btn btn-primary" asp-action="Create">Add Data New Hire</a>
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee") || User.IsInRole("UserIntern"))
+                    {
+                        <a class="btn btn-primary" asp-action="Create">Add New Request</a>
+                    }
                 </div>
             </div>
             <table id="table"
@@ -80,16 +83,27 @@
                 return '<span class="badge rounded-pill text-bg-warning">Waiting for Deploy</span>';
             }
         }
+        // Tetapkan variabel di sini untuk menentukan peran pengguna
+        var isAdminOrIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin") || User.IsInRole("UserIntern")));
+        var isManagerIT = @Html.Raw(Json.Serialize(User.IsInRole("UserManagerIT")));
+        var isEmployee = @Html.Raw(Json.Serialize(User.IsInRole("UserEmployee")));
 
         function actionFormatter(value, row, index) {
-            var editUrl = '@Url.Action("Edit", "NewHires")/' + row.id;
-            var detailsUrl = '@Url.Action("Details", "NewHires")/' + row.id;
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
-            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
-            return editBtn +  ' ' + detailsBtn;
-        }
+            var editUrl = '@Url.Action("Edit", "NewHires")' + '/' + row.id;
+            var deleteUrl = '@Url.Action("Delete", "NewHires")' + '/' + row.id;
+            var detailsUrl = '@Url.Action("Details", "NewHires")' + '/' + row.id;
 
-        
+            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
+            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
+
+            if (isAdminOrIntern) {
+                return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
+            } else if (isManagerIT) {
+                return detailsBtn + ' ' + deleteBtn;
+            }
+            return detailsBtn;
+        }
         $(function () {
             var $table = $('#table');
 

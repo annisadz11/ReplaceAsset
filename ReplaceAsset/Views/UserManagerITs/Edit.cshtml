@@ -1,0 +1,59 @@
+﻿@model ReplaceAsset.Models.UserManagerIT
+
+@{
+    ViewData["Title"] = "User Manager IT";
+}
+
+<div class="row gutters justify-content-center">
+    <div class="col-8 mt-5">
+        <form asp-action="Edit">
+            <div class="card m-0">
+                <div class="card-header text-center">
+                    <div class="card-title">Edit User Manager IT</div>
+                </div>
+                <hr class="m-0" />
+                <div class="card-body">
+                    <!-- Breadcrumb -->
+                    <partial name="_Breadcrumb" />
+                    <!-- Toolbar -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row gutters justify-content-center">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">User Name</label>
+                                <input asp-for="UserName" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container d-flex justify-content-center mt-3">
+                        <input type="submit" value="Update" class="btn btn-primary" style="margin: 0 10px;" />
+                        <a asp-action="Index" class="btn btn-secondary" style="margin: 0 10px;">Back</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
