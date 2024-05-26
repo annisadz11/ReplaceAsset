@@ -47,22 +47,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Status</label>
+                            <label>Email User</label>
                             <div class="input-group">
-                                @if (!Model.Status.HasValue)
-                                {
-                                    <span class="form-control badge badge-warning">Waiting for Approval</span>
-                                }
-                                else if (Model.Status.Value)
-                                {
-                                    <span class="form-control badge badge-success">Approved</span>
-                                }
-                                else
-                                {
-                                    <span class="form-control badge badge-danger">Rejected</span>
-                                }
+                                <input type="text" class="form-control" value="@Model.EmailUser" readonly>
                             </div>
                         </div>
+
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -100,6 +90,23 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" value="@Model.TypeReplace" readonly>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div class="input-group">
+                            @if (!Model.Status.HasValue)
+                            {
+                                <span class="form-control badge badge-warning">Waiting for Approval</span>
+                            }
+                            else if (Model.Status.Value)
+                            {
+                                <span class="form-control badge badge-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="form-control badge badge-danger">Rejected</span>
+                            }
                         </div>
                     </div>
                 </div>

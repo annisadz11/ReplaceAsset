@@ -97,6 +97,13 @@
                                     <span asp-validation-for="RequestDate" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="control-label">Email User</label>
+                                    <input asp-for="EmailUser" class="form-control" placeholder="Email User" />
+                                    <span asp-validation-for="EmailUser" class="text-danger"></span>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label asp-for="Reason" class="control-label"></label>
                                 <textarea asp-for="Reason" class="form-control" id="reasonTextarea" placeholder="Enter Reason Request" maxlength="1000" rows="4"></textarea>

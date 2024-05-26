@@ -46,7 +46,8 @@
                     <tr>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
-@*                         <th data-field="type" data-sortable="true" data-width="100">Type</th>
+@*                         <th data-field="emailUser" data-sortable="true" data-width="150">Email User</th>
+ *@@*                         <th data-field="type" data-sortable="true" data-width="100">Type</th>
  *@                        <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
 @*                         <th data-field="baseline" data-sortable="true" data-width="150">Baseline</th>
                          <th data-field="usageLocation" data-sortable="true" data-width="150">Usage Location</th>
@@ -126,7 +127,7 @@
             } else if (isManagerIT) {
                 return detailsBtn + ' ' + deleteBtn;
             } else if (isEmployee) {
-                return detailsBtn + ' ' + editBtn;
+                return detailsBtn;
             } else if (isIntern) {
                 return detailsBtn;
             }

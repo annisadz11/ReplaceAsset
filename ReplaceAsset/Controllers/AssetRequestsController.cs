@@ -111,6 +111,7 @@ namespace ReplaceAsset.Controllers
                     id = g.Id,
                     name = g.Name,
                     departement = g.Departement,
+                    emailUser = g.EmailUser,
                     type = g.Type,
                     serialNumber = g.SerialNumber,
                     baseline = g.Baseline,
@@ -155,11 +156,12 @@ namespace ReplaceAsset.Controllers
         // POST: AssetRequests/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Departement,Type,SerialNumber,Baseline,UsageLocation,RequestDate,Reason")] AssetRequest assetRequest)
+        public async Task<IActionResult> Create([Bind("Name,Departement,Type,SerialNumber,Baseline,UsageLocation,EmailUser,RequestDate,Reason")] AssetRequest assetRequest)
         {
             if (ModelState.IsValid)
             {
                 // Set default values for properties that should not be set in the Create action
+                assetRequest.Username = User.Identity.Name;
                 assetRequest.Status = null;
                 assetRequest.ApprovalDate = null;
                 assetRequest.Justify = null;
@@ -167,11 +169,71 @@ namespace ReplaceAsset.Controllers
 
                 _context.Add(assetRequest);
                 await _context.SaveChangesAsync();
+
+                // Mengirim email ke UserManagerIT
+                var userManagerIT = await _context.UserManagerITs.FirstOrDefaultAsync();
+                if (userManagerIT != null)
+                {
+                    await SendEmailAsync(
+                        assetRequest.EmailUser,
+                        userManagerIT.Email,
+                        assetRequest.EmailUser,
+                        "New Asset Request from " + assetRequest.Name,
+                        assetRequest.Name,
+                        assetRequest.Departement,
+                        assetRequest.Type,
+                        assetRequest.SerialNumber,
+                        assetRequest.Baseline,
+                        assetRequest.UsageLocation,
+                        assetRequest.RequestDate,
+                        assetRequest.Reason,
+                        assetRequest.Name
+                    );
+                }
+
                 TempData["SuccessMessage"] = "Asset request created successfully!";
                 return RedirectToAction(nameof(Index));
+
             }
+
             return View(assetRequest);
         }
+        private async Task SendEmailAsync(string fromEmail, string toEmail, string userEmail, 
+            string subject, string name, string department, string type, string serialNumber, string baseline, 
+            string usageLocation, DateTime? requestDate, string reason, string userName)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Asset Replacement Notification", "bth-esh@infineon.com"));
+            message.To.Add(new MailboxAddress("Recipient", toEmail));
+            message.Cc.Add(new MailboxAddress("CC Recipient", userEmail));
+            message.Subject = $"New Asset Request from {name}";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $@"
+    <p>Dear All,</p>
+    <p>{name} has submitted a new asset request with the following details:</p>
+    <ul>
+        <li><strong>Name:</strong> {name}</li>
+        <li><strong>Department:</strong> {department}</li>
+        <li><strong>Type:</strong> {type}</li>
+        <li><strong>Serial Number:</strong> {serialNumber}</li>
+        <li><strong>Baseline:</strong> {baseline}</li>
+        <li><strong>Usage Location:</strong> {usageLocation}</li>
+        <li><strong>Request Date:</strong> {requestDate?.ToString("dd MMM yyyy HH:mm")}</li>
+        <li><strong>Reason:</strong> {reason}</li>
+    </ul>
+    <p>Please review and take necessary action in Form Approval Request Asset Replacement.</p>
+    <p>Regards,<br>Asset Replacement Notification System</p>
+";
+            message.Body = bodyBuilder.ToMessageBody();
+
+
+            using var smtp = new SmtpClient();
+            smtp.Connect("mailrelay-internal.infineon.com", 25, false);
+            await smtp.SendAsync(message);
+            smtp.Disconnect(true);
+        }
+
 
         [Authorize(Roles = "UserAdmin,UserIntern")]
         // GET: AssetRequests/Edit/5
