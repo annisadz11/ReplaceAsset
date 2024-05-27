@@ -13,6 +13,14 @@
     {
       "library": "apexcharts@3.49.1",
       "destination": "wwwroot/vendor/apexcharts/"
+    },
+    {
+      "library": "bootstrap-table@1.22.6",
+      "destination": "wwwroot/vendor/bootstrap-table/"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/vendor/datatables/"
     }
   ]
 }

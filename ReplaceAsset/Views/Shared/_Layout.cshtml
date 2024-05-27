@@ -16,9 +16,7 @@
 	<link href="~/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 	<!--Notyf-->
 	<link href="~/vendor/notyf/notyf.min.css" rel="stylesheet" />
-	<!--Daterange CSS-->
-	<!-- Daterangepicker CSS -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 
 	<style>
 		.page-wrapper {
@@ -107,13 +105,14 @@
 	<script src="~/vendor/daterange/daterange.js"></script>
 	<script src="~/vendor/daterange/custom-daterange.js"></script>
 
-	<!-- Apex Charts -->
-	@* <script src="~/vendor/apex/apexcharts.min.js"></script>
-	<script src="~/vendor/apex/admin/visitors.js"></script>
-	<script src="~/vendor/apex/admin/deals.js"></script>
-	<script src="~/vendor/apex/admin/income.js"></script>
-	<script src="~/vendor/apex/admin/customers.js"></script> *@
-
+	<!-- sweetalert2 -->
+	<script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+	<!-- notyf -->
+	<script src="~/vendor/notyf/notyf.es.js"></script>
+	<script src="~/vendor/notyf/notyf.es.min.js"></script>
+	<script src="~/vendor/notyf/notyf.min.js"></script>
+	<script src="~/vendor/notyf/notyf.umd.js"></script>
+	<script src="~/vendor/notyf/notyf.umd.min.js"></script>
 	<!-- Main JS -->
 	<script src="~/js/main.js"></script>
 	@await RenderSectionAsync("Scripts", required: false)
@@ -130,14 +129,7 @@
 
 		setInterval(updateDateTime, 1000);
 	</script>
-	<!-- sweetalert2 -->
-	<script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
-	<!--Notyf-->
-	<script src="~/vendor/notyf/notyf.min.js"></script>
-	<!-- Moment.js -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-	<!-- Daterangepicker JavaScript -->
-	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 
 </body>
 </html>

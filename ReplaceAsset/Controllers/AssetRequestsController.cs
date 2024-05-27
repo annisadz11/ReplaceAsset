@@ -348,21 +348,20 @@ namespace ReplaceAsset.Controllers
         public async Task<IActionResult> Delete(int id, string handler)
         {
             var assetRequest = await _context.AssetRequest.FindAsync(id);
-
             if (assetRequest == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Asset request not found." });
             }
 
             if (handler == "Delete")
             {
                 _context.AssetRequest.Remove(assetRequest);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Asset request has been deleted successfully.";
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Asset request has been deleted successfully." });
             }
 
-            return View(assetRequest);
+            return Json(new { success = false, message = "Invalid operation." });
         }
         private bool AssetRequestExists(int id)
         {
