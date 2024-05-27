@@ -363,6 +363,22 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { success = false, message = "Invalid operation." });
         }
+
+        [HttpPost]
+        [Authorize(Roles = "UserAdmin")]
+        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        {
+            var assetRequests = _context.AssetRequest.Where(r => ids.Contains(r.Id)).ToList();
+            if (assetRequests.Count == 0)
+            {
+                return Json(new { success = false, message = "No asset requests found." });
+            }
+
+            _context.AssetRequest.RemoveRange(assetRequests);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = $"{assetRequests.Count} asset requests have been deleted successfully." });
+        }
         private bool AssetRequestExists(int id)
         {
             return _context.AssetRequest.Any(e => e.Id == id);

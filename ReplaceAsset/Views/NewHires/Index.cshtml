@@ -17,8 +17,11 @@
                 <div class="btn-group me-2">
                     @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee") || User.IsInRole("UserIntern"))
                     {
-                        <a class="btn btn-primary" asp-action="Create">Add New Request</a>
+                        <a class="btn btn-primary" asp-action="Create">Add New Data Hire</a>
                     }
+                </div>
+                <div class="btn-group">
+                    <button id="deleteSelectedBtn" class="btn btn-danger" onclick="confirmDeleteSelected()">Delete Selected</button>
                 </div>
             </div>
             <table id="table"
@@ -45,6 +48,7 @@
                    data-filter-control="true">
                 <thead>
                     <tr>
+                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="department" data-sortable="true" data-width="150">Department</th>
                         <th data-field="designation" data-sortable="true" data-width="100">Designation</th>
@@ -90,17 +94,15 @@
 
         function actionFormatter(value, row, index) {
             var editUrl = '@Url.Action("Edit", "NewHires")' + '/' + row.id;
-            var deleteUrl = '@Url.Action("Delete", "NewHires")' + '/' + row.id;
             var detailsUrl = '@Url.Action("Details", "NewHires")' + '/' + row.id;
 
             var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
-            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
 
             if (isAdminOrIntern) {
-                return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
+                return detailsBtn + ' ' + editBtn;
             } else if (isManagerIT) {
-                return detailsBtn + ' ' + deleteBtn;
+                return detailsBtn ;
             }
             return detailsBtn;
         }
@@ -209,5 +211,48 @@
             notyf.success('Data New Hire updated successfully!');
         }
 
+        function confirmDeleteSelected() {
+            var selectedRows = $('#table').bootstrapTable('getSelections');
+            if (selectedRows.length === 0) {
+                notyf.error('Please select at least one asset request to delete.');
+                return;
+            }
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete selected!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var selectedIds = selectedRows.map(function (row) {
+                        return row.id;
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("DeleteSelected", "NewHires")',
+                        type: 'POST',
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val(),
+                            'ids': selectedIds
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                notyf.success(result.message);
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                notyf.error(result.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            notyf.error('An error occurred while deleting the selected asset requests.');
+                        }
+                    });
+                }
+            });
+        }
      </script>
 }

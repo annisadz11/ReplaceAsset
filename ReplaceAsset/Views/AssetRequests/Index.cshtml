@@ -19,6 +19,10 @@
                         <a class="btn btn-primary" asp-action="Create">Add New Request</a>
                     }
                 </div>
+                <div class="btn-group">
+                    <button id="deleteSelectedBtn" class="btn btn-danger" onclick="confirmDeleteSelected()">Delete Selected</button>
+                </div>
+
             </div>
             <table id="table"
                    data-toggle="table"
@@ -46,6 +50,7 @@
                    data-filter-control="true">
                 <thead>
                     <tr>
+                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
 @*                         <th data-field="emailUser" data-sortable="true" data-width="150">Email User</th>
@@ -168,6 +173,49 @@
             });
         }
 
+        function confirmDeleteSelected() {
+            var selectedRows = $('#table').bootstrapTable('getSelections');
+            if (selectedRows.length === 0) {
+                notyf.error('Please select at least one asset request to delete.');
+                return;
+            }
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete selected!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var selectedIds = selectedRows.map(function (row) {
+                        return row.id;
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("DeleteSelected", "AssetRequests")',
+                        type: 'POST',
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val(),
+                            'ids': selectedIds
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                notyf.success(result.message);
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                notyf.error(result.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            notyf.error('An error occurred while deleting the selected asset requests.');
+                        }
+                    });
+                }
+            });
+        }
 
         $(document).ready(function () {
             $('#table').bootstrapTable({

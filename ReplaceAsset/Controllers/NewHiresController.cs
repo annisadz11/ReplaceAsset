@@ -167,6 +167,22 @@ namespace ReplaceAsset.Controllers
             }
             return View(newHire);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "UserManagerIT,UserAdmin")]
+        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        {
+            var newHires = _context.NewHire.Where(r => ids.Contains(r.Id)).ToList();
+            if (newHires.Count == 0)
+            {
+                return Json(new { success = false, message = "No new hires found." });
+            }
+
+            _context.NewHire.RemoveRange(newHires);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = $"{newHires.Count} new hires have been deleted successfully." });
+        }
         private bool NewHireExists(int id)
         {
             return _context.NewHire.Any(e => e.Id == id);

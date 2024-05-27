@@ -43,7 +43,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Device" class="control-label"></label>
-                                <input asp-for="Device" class="form-control" />
+                                <input asp-for="Device" class="form-control" placeholder="Notebook/Desktop" />
                                 <span asp-validation-for="Device" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -53,7 +53,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Date Of Join</label>
-                                <input asp-for="DateOfJoin" class="form-control" type="date" />
+                                <input asp-for="DateOfJoin" class="form-control" type="datetime-local" />
                                 <span asp-validation-for="DateOfJoin" class="text-danger"></span>
                             </div>
                             <div class="container d-flex justify-content-center">
@@ -93,7 +93,7 @@
                             icon: 'success',
                             title: 'Success',
                             text: 'Data New Hires created successfully!',
-                            timer: 3000,
+                            timer: 2000,
                             timerProgressBar: true
                         }).then(function () {
                             window.location.href = '@Url.Action("Index", "NewHires")';
