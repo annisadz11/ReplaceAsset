@@ -21,6 +21,10 @@
     {
       "library": "datatables@1.10.21",
       "destination": "wwwroot/vendor/datatables/"
+    },
+    {
+      "library": "TableExport@5.2.0",
+      "destination": "wwwroot/vendor/TableExport/"
     }
   ]
 }
