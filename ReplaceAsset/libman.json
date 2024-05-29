@@ -3,10 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "sweetalert2@11.11.0",
-      "destination": "wwwroot/vendor/sweetalert2/"
-    },
-    {
       "library": "bootstrap-daterangepicker@3.0.5",
       "destination": "wwwroot/vendor/bootstrap-daterangepicker/"
     },
@@ -15,16 +11,28 @@
       "destination": "wwwroot/vendor/apexcharts/"
     },
     {
-      "library": "bootstrap-table@1.22.6",
-      "destination": "wwwroot/vendor/bootstrap-table/"
-    },
-    {
       "library": "datatables@1.10.21",
       "destination": "wwwroot/vendor/datatables/"
     },
     {
       "library": "TableExport@5.2.0",
       "destination": "wwwroot/vendor/TableExport/"
+    },
+    {
+      "library": "bootstrap-table@1.22.6",
+      "destination": "wwwroot/vendor/bootstrap-table/"
+    },
+    {
+      "library": "noty@3.1.4",
+      "destination": "wwwroot/vendor/noty/"
+    },
+    {
+      "library": "sweetalert2@11.11.0",
+      "destination": "wwwroot/vendor/sweetalert2/"
+    },
+    {
+      "library": "notyf@3.10.0",
+      "destination": "wwwroot/vendor/notyf/"
     }
   ]
 }

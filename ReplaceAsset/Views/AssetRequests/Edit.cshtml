@@ -106,8 +106,8 @@
                         <span asp-validation-for="Reason" class="text-danger"></span>
                     </div>
                 <div class="container d-flex justify-content-center">
-                    <input type="submit" value="Update" class="btn btn-primary" style="margin: 0 5px;" />
-                    <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>
+                            <input type="submit" value="Update" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary" style="margin: 0 5px;">Back</a>
                 </div>
                 </div>
             </div>
@@ -117,26 +117,38 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-
-        <script>
-            $(document).ready(function () {
-                var reasonTextarea = $('#reasonTextarea');
-                var characterLeftDisplay = $('#characterLeft');
-                var maxLength = reasonTextarea.attr('maxlength');
-
-                updateCharacterCount();
-
-                reasonTextarea.on('input', function () {
-                    updateCharacterCount();
-                });
-
-                function updateCharacterCount() {
-                    var enteredText = reasonTextarea.val();
-                    var remainingCharacters = maxLength - enteredText.length;
-                    characterLeftDisplay.text(remainingCharacters + ' characters left');
-                }
-            });
-        </script>
-
     }
+    <script>
+        $(document).ready(function () {
+            var reasonTextarea = $('#reasonTextarea');
+            var characterLeftDisplay = $('#characterLeft');
+            var maxLength = reasonTextarea.attr('maxlength');
+
+            updateCharacterCount();
+
+            reasonTextarea.on('input', function () {
+                updateCharacterCount();
+            });
+
+            function updateCharacterCount() {
+                var enteredText = reasonTextarea.val();
+                var remainingCharacters = maxLength - enteredText.length;
+                characterLeftDisplay.text(remainingCharacters + ' characters left');
+            }
+        });
+
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: successMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    </script>
 }
+

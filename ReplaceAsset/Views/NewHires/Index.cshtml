@@ -88,7 +88,7 @@
             if (value) {
                 return `<span class="badge rounded-pill text-bg-success" data-bs-toggle="popover" data-bs-html="true" title="Checklist" data-bs-content="${checklist.replace(/"/g, '&quot;')}">Done Deploy</span>`;
             } else {
-                return '<span class="badge rounded-pill text-bg-warning">Waiting for Deploy</span>';
+                return '<span class="badge rounded-pill text-bg-secondary">Waiting for Deploy</span>';
             }
         }
         // Tetapkan variabel di sini untuk menentukan peran pengguna
@@ -100,7 +100,7 @@
             var editUrl = '@Url.Action("Edit", "NewHires")' + '/' + row.id;
             var detailsUrl = '@Url.Action("Details", "NewHires")' + '/' + row.id;
 
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
+            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
 
             if (isAdminOrIntern) {
@@ -187,6 +187,11 @@
                 $(this).popover('hide');
             });
         });
+        // Check if the query parameter returnFromEdit exists in URL
+        if (new URLSearchParams(window.location.search).has('returnFromEdit')) {
+            notyf.success('Data New Hire updated successfully!');
+        }
+
 
         // Notyf instance
         var notyf = new Notyf({
@@ -209,11 +214,6 @@
                 }
             ]
         });
-
-        // Check if the query parameter returnFromEdit exists in URL
-        if (new URLSearchParams(window.location.search).has('returnFromEdit')) {
-            notyf.success('Data New Hire updated successfully!');
-        }
 
         document.getElementById('exportPdfBtn').addEventListener('click', function () {
             var { jsPDF } = window.jspdf;

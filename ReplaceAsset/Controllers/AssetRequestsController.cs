@@ -146,7 +146,7 @@ namespace ReplaceAsset.Controllers
             return View(assetRequest);
         }
 
-        [Authorize(Roles = "UserIntern,UserAdmin,UserEmployee")]
+        [Authorize(Roles = "UserAdmin,UserEmployee")]
         // GET: AssetRequests/Create
         public IActionResult Create()
         {
@@ -193,11 +193,12 @@ namespace ReplaceAsset.Controllers
 
                 TempData["SuccessMessage"] = "Asset request created successfully!";
                 return RedirectToAction(nameof(Index));
-
             }
 
             return View(assetRequest);
         }
+
+
         private async Task SendEmailAsync(string fromEmail, string toEmail, string userEmail, 
             string subject, string name, string department, string type, string serialNumber, string baseline, 
             string usageLocation, DateTime? requestDate, string reason, string userName)
@@ -234,9 +235,63 @@ namespace ReplaceAsset.Controllers
             smtp.Disconnect(true);
         }
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // POST: AssetRequests/Edit/5
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Departement,Type,SerialNumber,Baseline,UsageLocation,EmailUser,RequestDate,Reason,Status,ApprovalDate,Justify,TypeReplace")] AssetRequest assetRequest)
+        {
+            if (id != assetRequest.Id)
+            {
+                return NotFound();
+            }
 
-        [Authorize(Roles = "UserAdmin,UserIntern")]
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Only update the properties you want to allow editing
+                    var assetRequestToUpdate = await _context.AssetRequest.FindAsync(id);
+
+                    if (assetRequestToUpdate == null)
+                    {
+                        return NotFound();
+                    }
+
+                    assetRequestToUpdate.Name = assetRequest.Name;
+                    assetRequestToUpdate.Departement = assetRequest.Departement;
+                    assetRequestToUpdate.Type = assetRequest.Type;
+                    assetRequestToUpdate.SerialNumber = assetRequest.SerialNumber;
+                    assetRequestToUpdate.Baseline = assetRequest.Baseline;
+                    assetRequestToUpdate.UsageLocation = assetRequest.UsageLocation;
+                    assetRequestToUpdate.EmailUser = assetRequest.EmailUser;
+                    assetRequestToUpdate.Reason = assetRequest.Reason;
+                    assetRequestToUpdate.Status = assetRequest.Status;
+                    assetRequestToUpdate.ApprovalDate = assetRequest.ApprovalDate;
+                    assetRequestToUpdate.Justify = assetRequest.Justify;
+                    assetRequestToUpdate.TypeReplace = assetRequest.TypeReplace;
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AssetRequestExists(assetRequest.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                TempData["SuccessMessage"] = "Asset request edited successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(assetRequest);
+        }
+
         // GET: AssetRequests/Edit/5
+        [Authorize(Roles = "UserManagerIT,UserAdmin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -251,133 +306,21 @@ namespace ReplaceAsset.Controllers
             }
             return View(assetRequest);
         }
-
-        // POST: AssetRequests/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Departement,Type,SerialNumber,Baseline,UsageLocation,RequestDate,Reason,Status,ApprovalDate,Justify,TypeReplace")] AssetRequest assetRequest)
-        {
-            if (id != assetRequest.Id)
-            {
-                return NotFound();
-            }
-
-            var existingRecord = await _context.AssetRequest.FindAsync(id);
-            if (existingRecord == null)
-            {
-                return NotFound();
-            }
-
-            // Periksa status permintaan
-            if (existingRecord.Status.HasValue)
-            {
-                // Permintaan telah disetujui atau ditolak, tidak dapat diedit
-                TempData["ErrorMessage"] = "This asset request cannot be edited because it has already been approved or rejected.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    existingRecord.Name = assetRequest.Name;
-                    existingRecord.Departement = assetRequest.Departement;
-                    existingRecord.Type = assetRequest.Type;
-                    existingRecord.SerialNumber = assetRequest.SerialNumber;
-                    existingRecord.Baseline = assetRequest.Baseline;
-                    existingRecord.UsageLocation = assetRequest.UsageLocation;
-                    existingRecord.RequestDate = assetRequest.RequestDate;
-                    existingRecord.Reason = assetRequest.Reason;
-                    existingRecord.Status = assetRequest.Status;
-                    existingRecord.ApprovalDate = assetRequest.ApprovalDate;
-                    existingRecord.Justify = assetRequest.Justify;
-                    existingRecord.TypeReplace = assetRequest.TypeReplace;
-
-                    _context.Update(existingRecord);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Asset Request has been updated successfully.";
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AssetRequestExists(existingRecord.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(assetRequest);
-        }
-
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
-        // GET: AssetRequests/Delete/5
-        public async Task<IActionResult> Delete(int? id, string handler)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var assetRequest = await _context.AssetRequest
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (assetRequest == null)
-            {
-                return NotFound();
-            }
-
-            if (handler == "Delete")
-            {
-                _context.AssetRequest.Remove(assetRequest);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Asset request has been deleted successfully.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(assetRequest);
-        }
-
         // POST: AssetRequests/Delete/5
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id, string handler)
+        [Authorize(Roles = "UserManagerIT,UserAdmin")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var assetRequest = await _context.AssetRequest.FindAsync(id);
-            if (assetRequest == null)
-            {
-                return Json(new { success = false, message = "Asset request not found." });
-            }
-
-            if (handler == "Delete")
+            if (assetRequest != null)
             {
                 _context.AssetRequest.Remove(assetRequest);
-                await _context.SaveChangesAsync();
-
-                return Json(new { success = true, message = "Asset request has been deleted successfully." });
             }
 
-            return Json(new { success = false, message = "Invalid operation." });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "UserAdmin")]
-        public async Task<IActionResult> DeleteSelected(List<int> ids)
-        {
-            var assetRequests = _context.AssetRequest.Where(r => ids.Contains(r.Id)).ToList();
-            if (assetRequests.Count == 0)
-            {
-                return Json(new { success = false, message = "No asset requests found." });
-            }
-
-            _context.AssetRequest.RemoveRange(assetRequests);
             await _context.SaveChangesAsync();
-
-            return Json(new { success = true, message = $"{assetRequests.Count} asset requests have been deleted successfully." });
+            TempData["SuccessMessage"] = "Asset request deleted successfully!";
+            return Json(new { success = true, message = "Asset request deleted successfully!" });
         }
         private bool AssetRequestExists(int id)
         {

@@ -80,6 +80,8 @@ namespace ReplaceAsset.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Component Asset Replacement has been updated successfully!";
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)

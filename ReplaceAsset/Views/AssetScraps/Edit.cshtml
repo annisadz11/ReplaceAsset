@@ -72,9 +72,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/vendor/notyf/notyf.min.js"></script>
-    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
-
     <script>
         $(document).ready(function () {
             $('#editForm').submit(function (event) {
@@ -92,7 +89,7 @@
                                     x: 'center',
                                     y: 'top',
                                 },
-                                duration: 3000,
+                                duration: 6000,
                                 dismissible: true,
                                 types: [
                                     {

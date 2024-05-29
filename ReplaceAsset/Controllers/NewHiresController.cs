@@ -151,6 +151,8 @@ namespace ReplaceAsset.Controllers
 
                     _context.Update(newHire);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "New Hire data has been updated successfully!";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -169,7 +171,7 @@ namespace ReplaceAsset.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "UserManagerIT,UserAdmin")]
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         public async Task<IActionResult> DeleteSelected(List<int> ids)
         {
             var newHires = _context.NewHire.Where(r => ids.Contains(r.Id)).ToList();

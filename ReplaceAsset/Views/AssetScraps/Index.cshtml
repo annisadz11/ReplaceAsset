@@ -48,7 +48,6 @@
                    data-filter-control="true">
                 <thead>
                     <tr>
-                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="type" data-sortable="true" data-width="100">Type</th>
                         <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
                         <th data-field="location" data-sortable="true" data-width="150">Location</th>
@@ -67,8 +66,30 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
     <script src="~/vendor/notyf/notyf.min.js"></script>
+    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 
     <script>
+        var notyf = new Notyf({
+            position: {
+                x: 'center',
+                y: 'top',
+            },
+            duration: 6000,
+            dismissible: true,
+            types: [
+                {
+                    type: 'success',
+                    background: 'green',
+                    icon: false
+                },
+                {
+                    type: 'error',
+                    background: 'red',
+                    icon: false
+                }
+            ]
+        });
+
         function statusFormatter(value, row) {
             if (value) {
                 return '<span class="badge rounded-pill text-bg-success">Done Scrap</span>';
@@ -86,7 +107,7 @@
             var deleteUrl = '@Url.Action("Delete", "AssetScraps")' + '/' + row.id;
             var detailsUrl = '@Url.Action("Details", "AssetScraps")' + '/' + row.id;
 
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
+            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
             var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
 
@@ -113,25 +134,5 @@
             });
         }
 
-        var notyf = new Notyf({
-            position: {
-                x: 'center',
-                y: 'top',
-            },
-            duration: 3000,
-            dismissible: true,
-            types: [
-                {
-                    type: 'success',
-                    background: 'green',
-                    icon: false
-                },
-                {
-                    type: 'error',
-                    background: 'red',
-                    icon: false
-                }
-            ]
-        });
     </script>
 }

@@ -145,6 +145,19 @@
                 characterLeftDisplay.text(remainingCharacters + ' characters left');
             }
         });
+
+            $(document).ready(function () {
+                var successMessage = '@TempData["SuccessMessage"]';
+                if (successMessage) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: successMessage,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
     </script>
     }
 }

@@ -34,7 +34,6 @@
                    data-filter-control="true">
                 <thead>
                     <tr>
-                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="department" data-sortable="true" data-width="150">Department</th>
                         <th data-field="designation" data-sortable="true" data-width="100">Designation</th>
@@ -117,7 +116,7 @@
 
         function actionFormatter(value, row, index) {
             var updateBtn = '<button class="btn btn-sm btn-success" onclick="showUpdateModal(' + row.id + ')">Update</button>';
-            var detailsBtn = '<a href="@Url.Action("Details", "NewHireApproval")/' + row.id + '" class="btn btn-sm btn-info">Details</a>';
+            var detailsBtn = '<a href="@Url.Action("Details", "NewHires")/' + row.id + '" class="btn btn-sm btn-info">Details</a>';
             return updateBtn + ' ' + detailsBtn;
         }
 

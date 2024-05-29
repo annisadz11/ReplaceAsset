@@ -14,15 +14,11 @@
             <!-- Toolbar -->
             <div id="toolbar">
                 <div class="btn-group me-2">
-                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee") || User.IsInRole("UserIntern"))
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee"))
                     {
                         <a class="btn btn-primary" asp-action="Create">Add New Request</a>
                     }
                 </div>
-                <div class="btn-group">
-                    <button id="deleteSelectedBtn" class="btn btn-danger" onclick="confirmDeleteSelected()">Delete Selected</button>
-                </div>
-
             </div>
             <table id="table"
                    data-toggle="table"
@@ -44,13 +40,10 @@
                    data-pagination-loop="false"
                    data-pagination-pre-text="Previous"
                    data-pagination-next-text="Next"
-                   data-export-data-type="all"
-                   data-export-types="['sql', 'excel', 'pdf']"
                    data-page-size="50"
                    data-filter-control="true">
                 <thead>
                     <tr>
-                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
 @*                         <th data-field="emailUser" data-sortable="true" data-width="150">Email User</th>
@@ -76,11 +69,8 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
+    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/vendor/notyf/notyf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 
     <script>
         var notyf = new Notyf({
@@ -104,7 +94,6 @@
             ]
         });
 
-        
         function statusFormatter(value, row, index) {
             let statusHtml;
             if (value === null) {
@@ -128,89 +117,38 @@
             var deleteUrl = '@Url.Action("Delete", "AssetRequests")' + '/' + row.id;
             var detailsUrl = '@Url.Action("Details", "AssetRequests")' + '/' + row.id;
 
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-primary">Edit</a>';
-            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>'; var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
+
+            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
+            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
 
             if (isAdmin) {
                 return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
-            } else if (isManagerIT) {
+            } else if (isManagerIT || isIntern) {
                 return detailsBtn + ' ' + deleteBtn;
             } else if (isEmployee) {
-                return detailsBtn;
-            } else if (isIntern) {
                 return detailsBtn;
             }
             return detailsBtn;
         }
+
         function confirmDelete(id) {
             Swal.fire({
-                title: "Are you sure want ?",
+                title: 'Are you sure?',
                 text: "You won't be able to revert this!",
-                icon: "warning",
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: '@Url.Action("Delete", "AssetRequests")' + '/' + id + '?handler=Delete',
-                        type: 'POST',
-                        data: { '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
-                        success: function (result) {
-                            if (result.success) {
-                                notyf.success(result.message);
-                                $('#table').bootstrapTable('refresh');
-                            } else {
-                                notyf.error(result.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            notyf.error('An error occurred while deleting the asset request.');
-                        }
-                    });
-                }
-            });
-        }
-
-        function confirmDeleteSelected() {
-            var selectedRows = $('#table').bootstrapTable('getSelections');
-            if (selectedRows.length === 0) {
-                notyf.error('Please select at least one asset request to delete.');
-                return;
-            }
-
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete selected!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var selectedIds = selectedRows.map(function (row) {
-                        return row.id;
-                    });
-
-                    $.ajax({
-                        url: '@Url.Action("DeleteSelected", "AssetRequests")',
-                        type: 'POST',
-                        data: {
-                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val(),
-                            'ids': selectedIds
-                        },
-                        success: function (result) {
-                            if (result.success) {
-                                notyf.success(result.message);
-                                $('#table').bootstrapTable('refresh');
-                            } else {
-                                notyf.error(result.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            notyf.error('An error occurred while deleting the selected asset requests.');
+                    $.post('@Url.Action("DeleteConfirmed", "AssetRequests")', { id: id }, function (data) {
+                        if (data.success) {
+                            $('#table').bootstrapTable('refresh');
+                            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        } else {
+                            Swal.fire('Failed!', 'There was an error deleting the asset request.', 'error');
                         }
                     });
                 }
@@ -218,14 +156,10 @@
         }
 
         $(document).ready(function () {
-            $('#table').bootstrapTable({
-                // options dan callback bootstrap-table Anda
-            }).on('load-success.bs.table', function (e, data) {
-        @if (TempData["SuccessMessage"] != null)
-        {
-            @:notyf.success('@TempData["SuccessMessage"]');
-        }
-                    });
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                notyf.success(successMessage);
+            }
         });
     </script>
 }
