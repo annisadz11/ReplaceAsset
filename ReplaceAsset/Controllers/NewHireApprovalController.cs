@@ -80,6 +80,8 @@ namespace ReplaceAsset.Controllers
 
             _context.Update(newHire);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Asset New Hire has been deploy successfully!";
+
 
             return Ok();
         }

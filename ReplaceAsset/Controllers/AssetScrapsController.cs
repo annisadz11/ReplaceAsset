@@ -75,7 +75,6 @@ namespace ReplaceAsset.Controllers
             }
             return View(assetScrap);
         }
-
         [Authorize(Roles = "UserAdmin,UserIntern")]
         // GET: AssetScraps/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -100,67 +99,36 @@ namespace ReplaceAsset.Controllers
         {
             if (id != assetScrap.Id)
             {
-                return Json(new { success = false, message = "ID mismatch." });
+                return NotFound();
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var existingAssetScrap = await _context.AssetScrap.FindAsync(id);
-
-                    if (existingAssetScrap == null)
-                    {
-                        return Json(new { success = false, message = "Asset Scrap not found." });
-                    }
-
-                    // Update hanya properti yang berubah
-                    existingAssetScrap.Type = assetScrap.Type;
-                    existingAssetScrap.SerialNumber = assetScrap.SerialNumber;
-                    existingAssetScrap.Location = assetScrap.Location;
-                    existingAssetScrap.DateInput = assetScrap.DateInput;
-
+                    _context.Update(assetScrap);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Asset Scrap updated successfully!";
                     return Json(new { success = true, message = "Asset Scrap updated successfully!" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AssetScrapExists(assetScrap.Id))
                     {
-                        return Json(new { success = false, message = "Asset Scrap not found after concurrency check." });
+                        return NotFound();
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Concurrency issue occurred while updating the Asset Scrap." });
+                        throw;
                     }
                 }
             }
-
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return Json(new { success = false, message = errors.Any() ? string.Join(", ", errors) : "Validation error." });
-        }
-
-      
-public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var assetScrap = await _context.AssetScrap
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (assetScrap == null)
-            {
-                return NotFound();
-            }
-
-            return View(assetScrap);
+            return Json(new { success = false, message = "Model state is invalid." });
         }
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
-        // GET: AssetRequests/Delete/5
-        public async Task<IActionResult> Delete(int? id, string handler)
+
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -169,47 +137,36 @@ public async Task<IActionResult> Details(int? id)
 
             var assetScrap = await _context.AssetScrap
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             if (assetScrap == null)
             {
                 return NotFound();
             }
 
-            if (handler == "Delete")
-            {
-                _context.AssetScrap.Remove(assetScrap);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Asset Scrap has been deleted successfully.";
-                return RedirectToAction(nameof(Index));
-            }
-
             return View(assetScrap);
         }
+        [Authorize(Roles = "UserAdmin,UserIntern,UserManagerIT")]
 
-        // POST: AssetRequests/Delete/5
         [HttpPost]
-        public async Task<IActionResult> Delete(int id, string handler)
+        public async Task<IActionResult> DeleteSelected(List<int> ids)
         {
-            var assetScrap = await _context.AssetScrap.FindAsync(id);
-
-            if (assetScrap == null)
+            try
             {
-                return NotFound();
-            }
+                var assetScraps = await _context.AssetScrap.Where(r => ids.Contains(r.Id)).ToListAsync();
+                if (!assetScraps.Any())
+                {
+                    return Json(new { success = false, message = "No asset scraps found." });
+                }
 
-            if (handler == "Delete")
-            {
-                _context.AssetScrap.Remove(assetScrap);
+                _context.AssetScrap.RemoveRange(assetScraps);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Asset Scrap has been deleted successfully.";
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = $"{assetScraps.Count} asset scraps have been deleted successfully." });
             }
-
-            return View(assetScrap);
+            catch (Exception e)
+            {
+                return Json(new { success = false, message = $"An error occurred: {e.Message}" });
+            }
         }
-       
-       
-
         private bool AssetScrapExists(int id)
         {
             return _context.AssetScrap.Any(e => e.Id == id);

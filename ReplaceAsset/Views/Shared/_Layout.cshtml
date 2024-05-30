@@ -1,135 +1,117 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - ReAsset </title>
-	<!-- Bootstrap css -->
-	<link rel="stylesheet" href="~/css/bootstrap.min.css">
-	<!-- Icomoon Font Icons css -->
-	<link rel="stylesheet" href="~/fonts/style.css">
-	<!-- Main css -->
-	<link rel="stylesheet" href="~/css/main.css">
-	<!--Bootstrap Icons-->
-	<link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-	<!-- SweetAlert2 -->
-	<link href="~/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
-	<!--Notyf-->
-	<link href="~/vendor/notyf/notyf.min.css" rel="stylesheet"/>
-	<!-- Lib for exporting table to PDF -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
-	<style>
-		.page-wrapper {
-			background-image: url('/img/leaf.png');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-			background-attachment: fixed;
-		}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ReAsset</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <!-- Icomoon Font Icons CSS -->
+    <link rel="stylesheet" href="~/fonts/style.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/css/main.css">
+    <!-- Bootstrap Icons -->
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- SweetAlert2 -->
+    <link href="~/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Notyf -->
+    <link href="~/vendor/notyf/notyf.min.css" rel="stylesheet" />
+    <!-- Lib for exporting table to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .page-wrapper {
+            background-image: url('/img/leaf.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-		h2, h4 {
-			color: #343a40; /* Warna font yang tidak mencolok (abu-abu tua) */
-			font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif, Tahoma, Geneva, Verdana, sans-serif;
-			padding-top: 3px; /* Padding atas */
-			padding-bottom: 3px; /* Padding bawah */
-		}
+        h2, h4 {
+            color: #343a40; /* Warna font yang tidak mencolok (abu-abu tua) */
+            font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif, Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 3px; /* Padding atas */
+            padding-bottom: 3px; /* Padding bawah */
+        }
 
-		.time-window-table {
-			width: auto; /* Mengatur lebar tabel agar sesuai konten */
-			border-collapse: collapse; /* Menghilangkan border jarak antar sel */
-			margin: 0 auto; /* Menjadikan tabel berada di tengah */
-		}
+        .time-window-table {
+            width: auto; /* Mengatur lebar tabel agar sesuai konten */
+            border-collapse: collapse; /* Menghilangkan border jarak antar sel */
+            margin: 0 auto; /* Menjadikan tabel berada di tengah */
+        }
 
-			.time-window-table td {
-				padding: 8px 15px; /* Menambahkan padding pada sel */
-				font-family: 'Source Sans 3', Tahoma, Geneva, Verdana, sans-serif;
-				color: #000; /* Warna font hitam */
-				font-size: 0,50rem; /* Ukuran font diperbesar */
-				border: 1px solid #dee2e6; /* Border tipis untuk sel */
-			}
-		
-	</style>
-
+            .time-window-table td {
+                padding: 8px 15px; /* Menambahkan padding pada sel */
+                font-family: 'Source Sans 3', Tahoma, Geneva, Verdana, sans-serif;
+                color: #000; /* Warna font hitam */
+                font-size: 0.50rem; /* Ukuran font diperbesar */
+                border: 1px solid #dee2e6; /* Border tipis untuk sel */
+            }
+    </style>
 
 </head>
 
-
 <body>
 
-	<!-- Page wrapper start -->
-	<div class="page-wrapper">
+    <!-- Page wrapper start -->
+    <div class="page-wrapper">
 
-		<!-- Sidebar wrapper start -->
-		<partial name="_Sidebar" />
-		<!-- Sidebar wrapper end -->
-		<!-- Page content start  -->
-		<div class="page-content">
-			<partial name="_Header" />
+        <!-- Sidebar wrapper start -->
+        <partial name="_Sidebar" />
+        <!-- Sidebar wrapper end -->
+        <!-- Page content start -->
+        <div class="page-content">
+            <partial name="_Header" />
 
-			<!-- Page header start -->
-			<div class="page-header">
-			</div>
-			<!-- Page header end -->
-			<!-- Main container start -->
-			<div class="main-container">
-				<main role="main">
-					@RenderBody()
-				</main>
-			</div>
-			<!-- Main container end -->
+            <!-- Page header start -->
+            <div class="page-header"></div>
+            <!-- Page header end -->
+            <!-- Main container start -->
+            <div class="main-container">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </div>
+            <!-- Main container end -->
 
-		</div>
-		<!-- Page content end -->
+        </div>
+        <!-- Page content end -->
 
-	</div>
-	<div class="container">
-		<main role="main" class="pb-3">
-			@RenderBody()
-		</main>
-	</div>
+    </div>
 
-	<!-- Required jQuery first, then Bootstrap Bundle JS -->
-	<script src="~/js/jquery.min.js"></script>
-	<script src="~/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/moment.js"></script>
+    <!-- Required jQuery first, then Bootstrap Bundle JS -->
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/moment.js"></script>
 
-	<!-- *************
-		************ Vendor Js Files *************
-	************* -->
-	<!-- Slimscroll JS -->
-	<script src="~/vendor/slimscroll/slimscroll.min.js"></script>
-	<script src="~/vendor/slimscroll/custom-scrollbar.js"></script>
+    <!-- Vendor JS Files -->
+    <script src="~/vendor/slimscroll/slimscroll.min.js"></script>
+    <script src="~/vendor/slimscroll/custom-scrollbar.js"></script>
+    <script src="~/vendor/daterange/daterange.js"></script>
+    <script src="~/vendor/daterange/custom-daterange.js"></script>
 
-	<!-- Daterange -->
-	<script src="~/vendor/daterange/daterange.js"></script>
-	<script src="~/vendor/daterange/custom-daterange.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+    <!-- Notyf -->
+    <script src="~/vendor/notyf/notyf.min.js"></script>
 
-	<!-- sweetalert2 -->
-	<script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
-	<!-- notyf -->
-	<script src="~/vendor/notyf/notyf.es.js"></script>
-	<script src="~/vendor/notyf/notyf.es.min.js"></script>
-	<script src="~/vendor/notyf/notyf.min.js"></script>
-	<script src="~/vendor/notyf/notyf.umd.js"></script>
-	<script src="~/vendor/notyf/notyf.umd.min.js"></script>
-	<!-- Main JS -->
-	<script src="~/js/main.js"></script>
-	@await RenderSectionAsync("Scripts", required: false)
-	<script>
-		function updateDateTime() {
-			var currentDate = new Date();
-			var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-			var dateString = currentDate.toLocaleDateString('en-US', options);
-			var timeString = currentDate.toLocaleTimeString();
+    <!-- Main JS -->
+    <script src="~/js/main.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        function updateDateTime() {
+            var currentDate = new Date();
+            var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            var dateString = currentDate.toLocaleDateString('en-US', options);
+            var timeString = currentDate.toLocaleTimeString();
 
-			document.getElementById('date').textContent = dateString;
-			document.getElementById('clock').textContent = timeString;
-		}
+            document.getElementById('date').textContent = dateString;
+            document.getElementById('clock').textContent = timeString;
+        }
 
-		setInterval(updateDateTime, 1000);
-	</script>
-
+        setInterval(updateDateTime, 1000);
+    </script>
 
 </body>
 </html>

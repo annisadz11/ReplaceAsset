@@ -63,7 +63,7 @@ namespace ReplaceAsset.Controllers
             // Update validation status
             assetScrap.ValidationScrap = true;
             _context.SaveChanges();
-
+            TempData["SuccessMessage"] = "Approval Scrap created successfully!";
             return Ok();
         }
     }

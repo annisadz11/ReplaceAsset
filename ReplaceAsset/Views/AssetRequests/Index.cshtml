@@ -19,6 +19,12 @@
                         <a class="btn btn-primary" asp-action="Create">Add New Request</a>
                     }
                 </div>
+                <div class="btn-group">
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
+                    {
+                        <button id="exportPdfBtn" class="btn btn-info">PDF</button>
+                    }
+                </div>
             </div>
             <table id="table"
                    data-toggle="table"
@@ -44,6 +50,7 @@
                    data-filter-control="true">
                 <thead>
                     <tr>
+                        <th data-field="state" data-checkbox="true"></th>
                         <th data-field="name" data-sortable="true" data-width="200">Name</th>
                         <th data-field="departement" data-sortable="true" data-width="150">Departement</th>
 @*                         <th data-field="emailUser" data-sortable="true" data-width="150">Email User</th>
@@ -71,6 +78,8 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
     <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/vendor/notyf/notyf.min.js"></script>
+
+
 
     <script>
         var notyf = new Notyf({
@@ -113,25 +122,31 @@
         var isIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserIntern")));
 
         function viewFormatter(value, row, index) {
-            var editUrl = '@Url.Action("Edit", "AssetRequests")' + '/' + row.id;
-            var deleteUrl = '@Url.Action("Delete", "AssetRequests")' + '/' + row.id;
+            @*var editUrl = '@Url.Action("Edit", "AssetRequests")' + '/' + row.id;
+            var deleteUrl = '@Url.Action("Delete", "AssetRequests")' + '/' + row.id;*@
             var detailsUrl = '@Url.Action("Details", "AssetRequests")' + '/' + row.id;
 
 
-            var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
-            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';
+            @*var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';*@
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
 
             if (isAdmin) {
-                return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
-            } else if (isManagerIT || isIntern) {
-                return detailsBtn + ' ' + deleteBtn;
-            } else if (isEmployee) {
+                return detailsBtn;
+            } else if (isManagerIT || isIntern || isEmployee) {
                 return detailsBtn;
             }
             return detailsBtn;
         }
-
+        // Permintaan Ekspor PDF Hanya untuk Admin, Manager IT dan Intern
+        if (isAdmin || isManagerIT || isIntern) {
+            document.getElementById('exportPdfBtn').addEventListener('click', function () {
+                var { jsPDF } = window.jspdf;
+                var doc = new jsPDF();
+                doc.autoTable({ html: '#table' });
+                doc.save('Request Asset Replacement.pdf');
+            });
+        }
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -154,6 +169,8 @@
                 }
             });
         }
+
+
 
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';

@@ -93,14 +93,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/vendor/notyf/notyf.min.js"></script>
-    <script>
-        // Notyf instance
-        var notyf = new Notyf();
-
-        // Check if the query parameter returnFromEdit exists in URL
-        if (new URLSearchParams(window.location.search).has('returnFromEdit')) {
-            notyf.success('Data Asset Scrap updated successfully!');
-        }
-    </script>
 }

@@ -100,13 +100,19 @@ namespace ReplaceAsset.Controllers
             {
                 _context.Add(newHire);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "New Hire successfully input!";
                 return RedirectToAction(nameof(Index));
             }
             return View(newHire);
         }
 
+
+
+
+
         [Authorize(Roles = "UserIntern,UserAdmin")]
         // GET: NewHires/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,10 +128,11 @@ namespace ReplaceAsset.Controllers
             return View(newHire);
         }
 
+
         // POST: NewHires/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Department,Designation,Device,SerialNumber,ModelAsset,DateOfJoin,HeadsetGiven,LaptopGiven,AdaptorGiven,PowerCableGiven,BagGiven")] NewHire newHire)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Department,Designation,Device,SerialNumber,ModelAsset,DateOfJoin,StatusCompleted,HeadsetGiven,LaptopGiven,AdaptorGiven,PowerCableGiven,BagGiven")] NewHire newHire)
         {
             if (id != newHire.Id)
             {
@@ -136,23 +143,9 @@ namespace ReplaceAsset.Controllers
             {
                 try
                 {
-                    // Fetch the existing hire record to get the current status
-                    var existingHire = await _context.NewHire.AsNoTracking().FirstOrDefaultAsync(n => n.Id == id);
-                    if (existingHire == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Preserve the existing status if it is completed
-                    if (existingHire.StatusCompleted)
-                    {
-                        newHire.StatusCompleted = true;
-                    }
-
                     _context.Update(newHire);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "New Hire data has been updated successfully!";
-
+                    return RedirectToAction(nameof(Index), new { returnFromEdit = true });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -165,13 +158,14 @@ namespace ReplaceAsset.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index), new { returnFromEdit = true });
             }
             return View(newHire);
         }
 
+
+
         [HttpPost]
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [Authorize(Roles = "UserAdmin,UserIntern,UserManagerIT")]
         public async Task<IActionResult> DeleteSelected(List<int> ids)
         {
             var newHires = _context.NewHire.Where(r => ids.Contains(r.Id)).ToList();
