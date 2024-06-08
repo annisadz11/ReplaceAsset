@@ -3,10 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap-daterangepicker@3.0.5",
-      "destination": "wwwroot/vendor/bootstrap-daterangepicker/"
-    },
-    {
       "library": "apexcharts@3.49.1",
       "destination": "wwwroot/vendor/apexcharts/"
     },
@@ -33,6 +29,10 @@
     {
       "library": "notyf@3.10.0",
       "destination": "wwwroot/vendor/notyf/"
+    },
+    {
+      "library": "bootstrap-daterangepicker@3.0.5",
+      "destination": "wwwroot/vendor/bootstrap-daterangepicker/"
     }
   ]
 }

@@ -4,14 +4,22 @@
 
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
+<link href="~/vendor/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
 
 <div class="row gutters mt-4">
     <div class="card">
-        <div class="card-header text-center">Approval Asset Requests</div>
+        <div class="card-header text-center large-title" style="font-size: 1.25rem;">Approval Asset Requests</div>
         <hr class="m-0" />
         <div class="card-body">
             <!-- Breadcrumb -->
             <partial name="_Breadcrumb" />
+            <!-- Date Range Picker -->
+            <div class="input-group mb-3">
+                <span class="input-group-text">Filter by Date</span>
+                <input type="text" id="dateRangePicker" class="form-control">
+                <button id="applyDateFilter" class="btn btn-primary">Apply</button>
+                <button id="resetDateFilter" class="btn btn-secondary">Reset Filter</button>
+            </div>
             <!-- Toolbar -->
             <table id="table"
                    data-toggle="table"
@@ -117,11 +125,45 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
     <script src="~/vendor/bootstrap-modal/js/bootstrap-modal.js"></script>
     <script src="~/vendor/bootstrap-modal/js/bootstrap-modal.min.js"></script>
+    <script src="~/vendor/moment/moment.min.js"></script>
+    <script src="~/vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script>
+        // Initialize date range picker
+        $(function () {
+            $('#dateRangePicker').daterangepicker({
+                locale: {
+                    format: 'DD MMM YYYY' // Format tanggal dd MMM YYYY
+                },
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month')
+            });
+        });
+
+        $('#applyDateFilter').on('click', function () {
+            var range = $('#dateRangePicker').val().split(' - ');
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: range[0],
+                    endDate: range[1]
+                }
+            });
+        });
+
+        $('#resetDateFilter').on('click', function () {
+            $('#dateRangePicker').data('daterangepicker').setStartDate(moment().startOf('month'));
+            $('#dateRangePicker').data('daterangepicker').setEndDate(moment().endOf('month'));
+            $('#dateRangePicker').val(''); // Mengosongkan nilai date range picker
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: '',
+                    endDate: ''
+                }
+            });
+        });
         function statusFormatter(value, row, index) {
             let statusHtml;
             if (value === null) {
-                statusHtml = '<span class="badge rounded-pill text-bg-secondary" style="line-height: 1; vertical-align: middle;">Waiting for Approval</span>';
+                statusHtml = '<span class="badge rounded-pill text-bg-warning" style="line-height: 1; vertical-align: middle;">Waiting for Approval</span>';
             } else if (value === true) {
                 statusHtml = '<span class="badge rounded-pill text-bg-success" style="line-height: 1; vertical-align: middle;">Approved</span>';
             } else {

@@ -3,14 +3,22 @@
 }
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
+<link href="~/vendor/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
 
 <div class="row gutters mt-4">
     <div class="card">
-        <div class="card-header text-center" style="font-size: 1.00rem;">Asset Request Form</div>
+        <div class="card-header text-center large-title" style="font-size: 1.25rem;">Asset Requests</div>
         <hr class="m-0" />
         <div class="card-body">
             <!-- Breadcrumb -->
             <partial name="_Breadcrumb" />
+            <!-- Date Range Picker -->
+            <div class="input-group mb-3">
+                <span class="input-group-text">Filter by Date</span>
+                <input type="text" id="dateRangePicker" class="form-control">
+                <button id="applyDateFilter" class="btn btn-primary">Apply</button>
+                <button id="resetDateFilter" class="btn btn-secondary">Reset Filter</button>
+            </div>
             <!-- Toolbar -->
             <div id="toolbar" class="d-flex">
                 <div class="btn-group me-2">
@@ -43,9 +51,12 @@
                    data-url="@Url.Action("GetData", "AssetRequests")"
                    data-pagination="true"
                    data-show-columns-toggle-all="true"
-                   data-pagination-loop="false"
-                   data-pagination-pre-text="Previous"
+                   data-side-pagination="server"
+                   data-pagination-layout="bottom"
                    data-pagination-next-text="Next"
+                   data-pagination-pre-text="Previous"
+                   data-page-list="[10, 25, 50, 100, All]"
+                   data-pagination-loop="false"
                    data-page-size="50"
                    data-filter-control="true">
                 <thead>
@@ -133,6 +144,8 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
     <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/vendor/notyf/notyf.min.js"></script>
+    <script src="~/vendor/moment/moment.min.js"></script>
+    <script src="~/vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
 
     <script>
         var notyf = new Notyf({
@@ -156,6 +169,37 @@
             ]
         });
 
+        // Initialize date range picker
+        $(function () {
+            $('#dateRangePicker').daterangepicker({
+                locale: {
+                    format: 'DD MMM YYYY' // Format tanggal dd MMM YYYY
+                },
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month')
+            });
+        });
+
+        $('#applyDateFilter').on('click', function () {
+            var range = $('#dateRangePicker').val().split(' - ');
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: range[0],
+                    endDate: range[1]
+                }
+            });
+        });
+
+        $('#resetDateFilter').on('click', function () {
+            $('#dateRangePicker').val(''); // Mengosongkan nilai date range picker
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: '',
+                    endDate: ''
+                }
+            });
+        });
+        
         function statusFormatter(value, row, index) {
             let statusHtml;
             if (value === null) {

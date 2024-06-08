@@ -34,21 +34,25 @@ namespace ReplaceAsset.Controllers
         }
 
         ///API ENDPOINT
+
         [HttpGet]
-        public IActionResult GetData()
+        public IActionResult GetData(DateTime? startDate, DateTime? endDate)
         {
-            var AssetRequests = _context.AssetRequest
-                .Where(g => g.Status == null) // Filter untuk status null
+            var assetRequests = _context.AssetRequest
+                .Where(ar =>
+                    (!startDate.HasValue || ar.RequestDate >= startDate) &&
+                    (!endDate.HasValue || ar.RequestDate <= endDate))
                 .Select(g => new
                 {
                     id = g.Id,
                     name = g.Name,
                     departement = g.Departement,
+                    emailUser = g.EmailUser,
                     type = g.Type,
                     serialNumber = g.SerialNumber,
                     baseline = g.Baseline,
                     usageLocation = g.UsageLocation,
-                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy HH:mm") : null,
+                    requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy  HH:mm") : null,
                     reason = g.Reason,
                     status = g.Status,
                     approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
@@ -56,8 +60,10 @@ namespace ReplaceAsset.Controllers
                     typeReplace = g.TypeReplace,
                 }).ToList();
 
-            return Json(new { rows = AssetRequests });
+            return Json(new { rows = assetRequests });
         }
+
+
 
         //APPROVE MANAGER
         [HttpPost]

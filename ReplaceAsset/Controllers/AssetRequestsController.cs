@@ -158,11 +158,14 @@ namespace ReplaceAsset.Controllers
         }
 
         // API ENDPOINT
-        [HttpGet]
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
-        public IActionResult GetData()
+        [HttpGet]
+        public IActionResult GetData(DateTime? startDate, DateTime? endDate)
         {
-            var AssetRequests = _context.AssetRequest
+            var assetRequests = _context.AssetRequest
+                .Where(ar =>
+                    (!startDate.HasValue || ar.RequestDate >= startDate) &&
+                    (!endDate.HasValue || ar.RequestDate <= endDate))
                 .Select(g => new
                 {
                     id = g.Id,
@@ -181,8 +184,9 @@ namespace ReplaceAsset.Controllers
                     typeReplace = g.TypeReplace,
                 }).ToList();
 
-            return Json(new { rows = AssetRequests });
+            return Json(new { rows = assetRequests });
         }
+
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         [HttpGet]
