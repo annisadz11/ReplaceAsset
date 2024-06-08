@@ -1,5 +1,4 @@
-﻿
-<nav id="sidebar" class="sidebar-wrapper">
+﻿<nav id="sidebar" class="sidebar-wrapper">
     <!-- Sidebar brand start -->
     <div class="w-100 d-flex">
         <a class="navbar-brand mx-auto flex-fill text-center" asp-controller="Home" asp-action="Index" style="margin-top:20px;">
@@ -13,49 +12,31 @@
         <!-- sidebar menu start -->
         <div class="sidebar-menu">
             <ul>
+                <!-- ADMIN Menu -->
                 @if (User.IsInRole("UserAdmin"))
                 {
-                    <li class="header-menu">ADMIN</li>
+                    <li class="header-menu text-uppercase">Admin</li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserAdmins" ? "active" : null)">
                         <a asp-controller="UserAdmins" asp-action="Index">
                             <i class="bi bi-person-circle"></i>
                             <span class="menu-text">Manage User Account</span>
                         </a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
-                        <a asp-controller="Home" asp-action="Index">
-                            <i class="icon-devices_other"></i>
-                            <span class="menu-text">Dashboard</span>
-                        </a>
-                    </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
                         <a asp-controller="AssetRequests" asp-action="Index">
-                            <i class="icon-devices_other"></i>
+                            <i class="bi bi-cart-plus"></i>
                             <span class="menu-text">Request Replacement</span>
-                        </a>
-                    </li>
-
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetApproval" ? "active" : null)">
-                        <a asp-controller="AssetApproval" asp-action="Index">
-                            <i class="bi bi-clipboard-check"></i>
-                            <span class="menu-text">Approval Replacement</span>
-                        </a>
-                    </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ScrapApproval" ? "active" : null)">
-                        <a asp-controller="ScrapApproval" asp-action="Index">
-                            <i class="bi bi-folder-x"></i>
-                            <span class="menu-text">Approval Scrap</span>
-                        </a>
-                    </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHireApproval" ? "active" : null)">
-                        <a asp-controller="NewHireApproval" asp-action="Index">
-                            <i class="bi bi-file-earmark-plus"></i>
-                            <span class="menu-text">Approval New Hire</span>
                         </a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
                         <a asp-controller="NewAssetReplacements" asp-action="Index">
-                            <i class="icon-documents"></i>
+                            <i class="bi bi-file-earmark-code"></i>
                             <span class="menu-text">New Asset Replacement</span>
                         </a>
                     </li>
@@ -77,31 +58,49 @@
                             <span class="menu-text">Asset Scrap</span>
                         </a>
                     </li>
-
-
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetApproval" ? "active" : null)">
+                        <a asp-controller="AssetApproval" asp-action="Index">
+                            <i class="bi bi-clipboard-check"></i>
+                            <span class="menu-text">Approval Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ScrapApproval" ? "active" : null)">
+                        <a asp-controller="ScrapApproval" asp-action="Index">
+                            <i class="bi bi-folder-x"></i>
+                            <span class="menu-text">Approval Scrap</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHireApproval" ? "active" : null)">
+                        <a asp-controller="NewHireApproval" asp-action="Index">
+                            <i class="bi bi-file-earmark-plus"></i>
+                            <span class="menu-text">Approval New Hire</span>
+                        </a>
+                    </li>
                 }
 
+                <!-- EMPLOYEE Menu -->
                 @if (User.IsInRole("UserEmployee"))
                 {
-                    <li class="header-menu">EMPLOYEE</li>
+                    <li class="header-menu text-uppercase">Employee</li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
                         <a asp-controller="Home" asp-action="Index">
-                            <i class="icon-devices_other"></i>
+                            <i class="bi bi-speedometer2"></i>
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
                 }
 
+                <!-- MANAGER IT Menu -->
                 @if (User.IsInRole("UserManagerIT"))
                 {
-                    <li class="header-menu">MANAGER IT</li>
+                    <li class="header-menu text-uppercase">Manager IT</li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
                         <a asp-controller="Home" asp-action="Index">
-                            <i class="icon-devices_other"></i>
+                            <i class="bi bi-speedometer2"></i>
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserAdmins" ? "active" : null)">
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserManagerITs" ? "active" : null)">
                         <a asp-controller="UserManagerITs" asp-action="Index">
                             <i class="bi bi-person-circle"></i>
                             <span class="menu-text">Manage User Account</span>
@@ -113,7 +112,30 @@
                             <span class="menu-text">Request Replacement</span>
                         </a>
                     </li>
-
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
+                        <a asp-controller="NewAssetReplacements" asp-action="Index">
+                            <i class="bi bi-file-earmark-code"></i>
+                            <span class="menu-text">New Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ComponentAssetReplacements" ? "active" : null)">
+                        <a asp-controller="ComponentAssetReplacements" asp-action="Index">
+                            <i class="bi bi-tools"></i>
+                            <span class="menu-text">Component Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHires" ? "active" : null)">
+                        <a asp-controller="NewHires" asp-action="Index">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="menu-text">New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetScraps" ? "active" : null)">
+                        <a asp-controller="AssetScraps" asp-action="Index">
+                            <i class="bi bi-trash"></i>
+                            <span class="menu-text">Asset Scrap</span>
+                        </a>
+                    </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetApproval" ? "active" : null)">
                         <a asp-controller="AssetApproval" asp-action="Index">
                             <i class="bi bi-clipboard-check"></i>
@@ -132,46 +154,19 @@
                             <span class="menu-text">Approval New Hire</span>
                         </a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
-                        <a asp-controller="NewAssetReplacements" asp-action="Index">
-                            <i class="icon-documents"></i>
-                            <span class="menu-text">New Asset Replacement</span>
-                        </a>
-                    </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ComponentAssetReplacements" ? "active" : null)">
-                        <a asp-controller="ComponentAssetReplacements" asp-action="Index">
-                            <i class="bi bi-tools"></i>
-                            <span class="menu-text">Component Asset Replacement</span>
-                        </a>
-                    </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHires" ? "active" : null)">
-                        <a asp-controller="NewHires" asp-action="Index">
-                            <i class="bi bi-person-plus"></i>
-                            <span class="menu-text">New Hire</span>
-                        </a>
-                    </li>
-
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetScraps" ? "active" : null)">
-                        <a asp-controller="AssetScraps" asp-action="Index">
-                            <i class="bi bi-trash"></i>
-                            <span class="menu-text">Asset Scrap</span>
-                        </a>
-                    </li>
-
-
                 }
 
+                <!-- INTERN IT Menu -->
                 @if (User.IsInRole("UserIntern"))
                 {
-                    <li class="header-menu">INTERN IT</li>
-
+                    <li class="header-menu text-uppercase">Intern IT</li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
                         <a asp-controller="Home" asp-action="Index">
-                            <i class="icon-devices_other"></i>
+                            <i class="bi bi-speedometer2"></i>
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserAdmins" ? "active" : null)">
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserInterns" ? "active" : null)">
                         <a asp-controller="UserInterns" asp-action="Index">
                             <i class="bi bi-person-circle"></i>
                             <span class="menu-text">Manage User Account</span>
@@ -183,10 +178,9 @@
                             <span class="menu-text">Request Replacement</span>
                         </a>
                     </li>
-
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
                         <a asp-controller="NewAssetReplacements" asp-action="Index">
-                            <i class="icon-documents"></i>
+                            <i class="bi bi-file-earmark-code"></i>
                             <span class="menu-text">New Asset Replacement</span>
                         </a>
                     </li>
@@ -215,3 +209,262 @@
     </div>
     <!-- Sidebar content end -->
 </nav>
+
+@*<nav id="sidebar" class="sidebar-wrapper">
+    <!-- Sidebar brand start -->
+    <div class="w-100 d-flex">
+        <a class="navbar-brand mx-auto flex-fill text-center" asp-controller="Home" asp-action="Index" style="margin-top:20px;">
+            <img src="~/img/LOGO.png" width="auto" height="24" alt="Website Logo" class="d-block mx-auto">
+        </a>
+    </div>
+    <hr style="margin-top:1rem;margin-bottom:0;">
+    <!-- Sidebar brand end -->
+    <!-- Sidebar content start -->
+    <div class="sidebar-content">
+        <!-- sidebar menu start -->
+        <div class="sidebar-menu">
+            <ul>
+                <!-- ADMIN Menu -->
+                @if (User.IsInRole("UserAdmin"))
+                {
+                    <li class="header-menu text-uppercase">Admin</li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserAdmins" ? "active" : null)">
+                        <a asp-controller="UserAdmins" asp-action="Index">
+                            <i class="bi bi-person-circle"></i>
+                            <span class="menu-text">Manage User Account</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
+                        <a asp-controller="AssetRequests" asp-action="Index">
+                            <i class="bi bi-cart-plus"></i>
+                            <span class="menu-text">Request Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetApproval" ? "active" : null)">
+                        <a asp-controller="AssetApproval" asp-action="Index">
+                            <i class="bi bi-clipboard-check"></i>
+                            <span class="menu-text">Approval Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ScrapApproval" ? "active" : null)">
+                        <a asp-controller="ScrapApproval" asp-action="Index">
+                            <i class="bi bi-folder-x"></i>
+                            <span class="menu-text">Approval Scrap</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHireApproval" ? "active" : null)">
+                        <a asp-controller="NewHireApproval" asp-action="Index">
+                            <i class="bi bi-file-earmark-plus"></i>
+                            <span class="menu-text">Approval New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
+                        <a asp-controller="NewAssetReplacements" asp-action="Index">
+                            <i class="bi bi-file-earmark-code"></i>
+                            <span class="menu-text">New Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ComponentAssetReplacements" ? "active" : null)">
+                        <a asp-controller="ComponentAssetReplacements" asp-action="Index">
+                            <i class="bi bi-tools"></i>
+                            <span class="menu-text">Component Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHires" ? "active" : null)">
+                        <a asp-controller="NewHires" asp-action="Index">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="menu-text">New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetScraps" ? "active" : null)">
+                        <a asp-controller="AssetScraps" asp-action="Index">
+                            <i class="bi bi-trash"></i>
+                            <span class="menu-text">Asset Scrap</span>
+                        </a>
+                    </li>
+                }
+
+                <!-- EMPLOYEE Menu -->
+                @if (User.IsInRole("UserEmployee"))
+                {
+                    <li class="header-menu text-uppercase">Employee</li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                }
+
+                <!-- MANAGER IT Menu -->
+                @if (User.IsInRole("UserManagerIT"))
+                {
+                    <li class="header-menu text-uppercase">Manager IT</li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserManagerITs" ? "active" : null)">
+                        <a asp-controller="UserManagerITs" asp-action="Index">
+                            <i class="bi bi-person-circle"></i>
+                            <span class="menu-text">Manage User Account</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
+                        <a asp-controller="AssetRequests" asp-action="Index">
+                            <i class="bi bi-cart-plus"></i>
+                            <span class="menu-text">Request Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetApproval" ? "active" : null)">
+                        <a asp-controller="AssetApproval" asp-action="Index">
+                            <i class="bi bi-clipboard-check"></i>
+                            <span class="menu-text">Approval Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ScrapApproval" ? "active" : null)">
+                        <a asp-controller="ScrapApproval" asp-action="Index">
+                            <i class="bi bi-folder-x"></i>
+                            <span class="menu-text">Approval Scrap</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHireApproval" ? "active" : null)">
+                        <a asp-controller="NewHireApproval" asp-action="Index">
+                            <i class="bi bi-file-earmark-plus"></i>
+                            <span class="menu-text">Approval New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
+                        <a asp-controller="NewAssetReplacements" asp-action="Index">
+                            <i class="bi bi-file-earmark-code"></i>
+                            <span class="menu-text">New Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ComponentAssetReplacements" ? "active" : null)">
+                        <a asp-controller="ComponentAssetReplacements" asp-action="Index">
+                            <i class="bi bi-tools"></i>
+                            <span class="menu-text">Component Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHires" ? "active" : null)">
+                        <a asp-controller="NewHires" asp-action="Index">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="menu-text">New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetScraps" ? "active" : null)">
+                        <a asp-controller="AssetScraps" asp-action="Index">
+                            <i class="bi bi-trash"></i>
+                            <span class="menu-text">Asset Scrap</span>
+                        </a>
+                    </li>
+                }
+
+                <!-- INTERN IT Menu -->
+                @if (User.IsInRole("UserIntern"))
+                {
+                    <li class="header-menu text-uppercase">Intern IT</li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : null)">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserInterns" ? "active" : null)">
+                        <a asp-controller="UserInterns" asp-action="Index">
+                            <i class="bi bi-person-circle"></i>
+                            <span class="menu-text">Manage User Account</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
+                        <a asp-controller="AssetRequests" asp-action="Index">
+                            <i class="bi bi-cart-plus"></i>
+                            <span class="menu-text">Request Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewAssetReplacements" ? "active" : null)">
+                        <a asp-controller="NewAssetReplacements" asp-action="Index">
+                            <i class="bi bi-file-earmark-code"></i>
+                            <span class="menu-text">New Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "ComponentAssetReplacements" ? "active" : null)">
+                        <a asp-controller="ComponentAssetReplacements" asp-action="Index">
+                            <i class="bi bi-tools"></i>
+                            <span class="menu-text">Component Asset Replacement</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "NewHires" ? "active" : null)">
+                        <a asp-controller="NewHires" asp-action="Index">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="menu-text">New Hire</span>
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetScraps" ? "active" : null)">
+                        <a asp-controller="AssetScraps" asp-action="Index">
+                            <i class="bi bi-trash"></i>
+                            <span class="menu-text">Asset Scrap</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <!-- sidebar menu end -->
+    </div>
+    <!-- Sidebar content end -->
+</nav>
+<style>
+    .sidebar-wrapper {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    .sidebar-menu ul {
+        padding: 0;
+    }
+
+        .sidebar-menu ul li {
+            display: block;
+            margin: 10px 0;
+        }
+
+            .sidebar-menu ul li.active > a {
+                background-color: #495057;
+                color: #fff;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 10px 15px;
+                display: block;
+                color: #adb5bd;
+                text-decoration: none;
+            }
+
+                .sidebar-menu ul li a:hover {
+                    background-color: #495057;
+                    color: #fff;
+                }
+
+    .header-menu {
+        padding: 10px 15px;
+        font-size: 1.1rem;
+        color: #adb5bd;
+    }
+
+    .menu-text {
+        margin-left: 10px;
+    }
+
+    .sidebar-menu ul li i {
+        margin-right: 10px;
+    }
+</style>
+*@

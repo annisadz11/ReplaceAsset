@@ -21,6 +21,7 @@
                     @if (User.IsInRole("UserAdmin") || User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
                     {
                         <button id="exportPdfBtn" class="btn btn-info me-2">PDF</button>
+                        <button id="exportExcelBtn" class="btn btn-primary me-2">Excel</button>
                         <button id="deleteSelectedBtn" class="btn btn-danger">Delete</button>
                     }
                 </div>
@@ -180,6 +181,10 @@
 
             return detailsBtn;
         }
+
+        document.getElementById('exportExcelBtn').addEventListener('click', function () {
+            window.location.href = '@Url.Action("ExportToExcel", "AssetRequests")';
+        });
 
         // Permintaan Ekspor PDF Hanya untuk Admin, Manager IT dan Intern
         if (isAdmin || isManagerIT || isIntern) {

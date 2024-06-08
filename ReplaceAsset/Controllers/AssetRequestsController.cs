@@ -95,6 +95,61 @@ namespace ReplaceAsset.Controllers
 			return Json(requests);
 		}
 
+
+        // Endpoint untuk Ekspor ke Excel
+        public IActionResult ExportToExcel()
+        {
+            var assetRequests = _context.AssetRequest.ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                // Mengubah nama worksheet menjadi "Asset Requests" dengan spasi
+                var worksheet = workbook.Worksheets.Add("Asset Requests");
+
+                // Membuat header pada Excel dengan nama kolom memiliki spasi yang sesuai
+                worksheet.Cell(1, 1).Value = "Name";
+                worksheet.Cell(1, 2).Value = "Email User";
+                worksheet.Cell(1, 3).Value = "Departement";
+                worksheet.Cell(1, 4).Value = "Type";
+                worksheet.Cell(1, 5).Value = "Serial Number";
+                worksheet.Cell(1, 6).Value = "Baseline";
+                worksheet.Cell(1, 7).Value = "Usage Location";
+                worksheet.Cell(1, 8).Value = "Request Date";
+                worksheet.Cell(1, 9).Value = "Reason";
+                worksheet.Cell(1, 10).Value = "Status";
+                worksheet.Cell(1, 11).Value = "Approval Date";
+                worksheet.Cell(1, 12).Value = "Justify";
+                worksheet.Cell(1, 13).Value = "Type Replace";
+
+                // Mengisi data pada Excel
+                for (int i = 0; i < assetRequests.Count; i++)
+                {
+                    worksheet.Cell(i + 2, 1).Value = assetRequests[i].Name;
+                    worksheet.Cell(i + 2, 2).Value = assetRequests[i].EmailUser;
+                    worksheet.Cell(i + 2, 3).Value = assetRequests[i].Departement;
+                    worksheet.Cell(i + 2, 4).Value = assetRequests[i].Type;
+                    worksheet.Cell(i + 2, 5).Value = assetRequests[i].SerialNumber;
+                    worksheet.Cell(i + 2, 6).Value = assetRequests[i].Baseline;
+                    worksheet.Cell(i + 2, 7).Value = assetRequests[i].UsageLocation;
+                    worksheet.Cell(i + 2, 8).Value = assetRequests[i].RequestDate;
+                    worksheet.Cell(i + 2, 9).Value = assetRequests[i].Reason;
+                    worksheet.Cell(i + 2, 10).Value = assetRequests[i].Status.HasValue ? (assetRequests[i].Status.Value ? "Approved" : "Rejected") : "Waiting for Approval";
+                    worksheet.Cell(i + 2, 11).Value = assetRequests[i].ApprovalDate;
+                    worksheet.Cell(i + 2, 12).Value = assetRequests[i].Justify;
+                    worksheet.Cell(i + 2, 13).Value = assetRequests[i].TypeReplace;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    // Mengubah nama file menjadi "Asset Requests.xlsx" dengan spasi
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Asset Requests.xlsx");
+                }
+            }
+        }
+
+
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         // GET: AssetRequest
         public IActionResult Index()
