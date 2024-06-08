@@ -6,6 +6,7 @@
 
 @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee"))
 {
+
     <div class="row gutters justify-content-center">
         <div class="col-10 mt-5">
             <form asp-action="Create" method="post">
@@ -122,31 +123,27 @@
             </form>
         </div>
     </div>
-
     @section Scripts {
     @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
         <script>
-        $(document).ready(function () {
-            var reasonTextarea = $('#reasonTextarea');
-            var characterLeftDisplay = $('#characterLeft');
-            var maxLength = reasonTextarea.attr('maxlength');
-
-            updateCharacterCount();
-
-            reasonTextarea.on('input', function () {
-                updateCharacterCount();
-            });
-
-            function updateCharacterCount() {
-                var enteredText = reasonTextarea.val();
-                var remainingCharacters = maxLength - enteredText.length;
-                characterLeftDisplay.text(remainingCharacters + ' characters left');
-            }
-        });
-
             $(document).ready(function () {
+                var reasonTextarea = $('#reasonTextarea');
+                var characterLeftDisplay = $('#characterLeft');
+                var maxLength = reasonTextarea.attr('maxlength');
+
+                updateCharacterCount();
+                reasonTextarea.on('input', function () {
+                    updateCharacterCount();
+                });
+
+                function updateCharacterCount() {
+                    var enteredText = reasonTextarea.val();
+                    var remainingCharacters = maxLength - enteredText.length;
+                    characterLeftDisplay.text(remainingCharacters + ' characters left');
+                }
+
                 var successMessage = '@TempData["SuccessMessage"]';
                 if (successMessage) {
                     Swal.fire({
@@ -158,7 +155,7 @@
                     });
                 }
             });
-    </script>
+        </script>
     }
 }
 else

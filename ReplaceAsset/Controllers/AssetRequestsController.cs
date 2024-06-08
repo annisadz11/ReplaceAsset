@@ -11,6 +11,8 @@ using ReplaceAsset.Data;
 using ReplaceAsset.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.DirectoryServices.Protocols;
+using ClosedXML.Excel;
 
 namespace ReplaceAsset.Controllers
 {
@@ -128,6 +130,48 @@ namespace ReplaceAsset.Controllers
         }
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
+        [HttpGet]
+        public IActionResult GetDataByStatus(string status)
+        {
+            List<AssetRequest> assetRequests = null;
+
+            switch (status)
+            {
+                case "approved":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == true).ToList();
+                    break;
+                case "rejected":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == false).ToList();
+                    break;
+                case "waiting":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == null).ToList();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            var result = assetRequests.Select(g => new
+            {
+                id = g.Id,
+                name = g.Name,
+                departement = g.Departement,
+                emailUser = g.EmailUser,
+                type = g.Type,
+                serialNumber = g.SerialNumber,
+                baseline = g.Baseline,
+                usageLocation = g.UsageLocation,
+                requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy  HH:mm") : null,
+                reason = g.Reason,
+                status = g.Status,
+                approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
+                justify = g.Justify,
+                typeReplace = g.TypeReplace,
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
         // GET: AssetRequests/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -234,6 +278,86 @@ namespace ReplaceAsset.Controllers
             await smtp.SendAsync(message);
             smtp.Disconnect(true);
         }
+        [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
+        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteRequest request)
+        {
+            if (request == null || !request.Ids.Any())
+            {
+                return BadRequest("No items selected for deletion.");
+            }
+
+            IEnumerable<AssetRequest> assetRequests;
+
+            switch (request.Status)
+            {
+                case "approved":
+                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == true).ToListAsync();
+                    break;
+                case "rejected":
+                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == false).ToListAsync();
+                    break;
+                case "waiting":
+                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == null).ToListAsync();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            if (!assetRequests.Any())
+            {
+                return NotFound("No requests found with the specified status.");
+            }
+
+            _context.AssetRequest.RemoveRange(assetRequests);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Selected asset requests were deleted successfully." });
+        }
+
+        // Fungsi Generate PDF berdasarkan status
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [HttpGet]
+        public IActionResult GeneratePdfByStatus(string status)
+        {
+            List<AssetRequest> assetRequests = null;
+
+            switch (status)
+            {
+                case "Approved":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == true).ToList();
+                    break;
+                case "Rejected":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == false).ToList();
+                    break;
+                case "Waiting for Approval":
+                    assetRequests = _context.AssetRequest.Where(ar => ar.Status == null).ToList();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            var result = assetRequests.Select(g => new
+            {
+                id = g.Id,
+                name = g.Name,
+                departement = g.Departement,
+                emailUser = g.EmailUser,
+                type = g.Type,
+                serialNumber = g.SerialNumber,
+                baseline = g.Baseline,
+                usageLocation = g.UsageLocation,
+                requestDate = g.RequestDate.HasValue ? g.RequestDate.Value.ToString("dd MMM yyyy  HH:mm") : null,
+                reason = g.Reason,
+                status = g.Status,
+                approvalDate = g.ApprovalDate.HasValue ? g.ApprovalDate.Value.ToString("dd MMM yyyy HH:mm") : null,
+                justify = g.Justify,
+                typeReplace = g.TypeReplace,
+            }).ToList();
+
+            return Json(result);
+        }
+
+
 
         private bool AssetRequestExists(int id)
         {
@@ -246,6 +370,11 @@ namespace ReplaceAsset.Controllers
             return View(assetrequestToApprove);
         }
 
-
+        // Additional Model for Delete Request
+        public class DeleteRequest
+        {
+            public List<int> Ids { get; set; }
+            public string Status { get; set; }
+        }
     }
 }
