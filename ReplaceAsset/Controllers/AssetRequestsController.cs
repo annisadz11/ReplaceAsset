@@ -235,73 +235,7 @@ namespace ReplaceAsset.Controllers
             smtp.Disconnect(true);
         }
 
-/*        // GET: AssetRequests/Edit/5
-        [Authorize(Roles = "UserAdmin")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var assetRequest = await _context.AssetRequest.FindAsync(id);
-            if (assetRequest == null)
-            {
-                return NotFound();
-            }
-            return View(assetRequest);
-        }
-
-        // POST: AssetRequests/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,EmailUser,Departement,Type,SerialNumber,Baseline,UsageLocation,RequestDate,Reason,Status,ApprovalDate,Justify,TypeReplace")] AssetRequest assetRequest)
-        {
-            if (id != assetRequest.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(assetRequest);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Asset request updated successfully!";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AssetRequestExists(assetRequest.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-            return View(assetRequest);
-        }
-        // POST: AssetRequests/Delete/5
-        [Authorize(Roles = "UserAdmin")]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var assetRequest = await _context.AssetRequest.FindAsync(id);
-            if (assetRequest != null)
-            {
-                _context.AssetRequest.Remove(assetRequest);
-            }
-
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Asset request deleted successfully!";
-            return Json(new { success = true, message = "Asset request deleted successfully!" });
-        }
-*/        private bool AssetRequestExists(int id)
+        private bool AssetRequestExists(int id)
         {
             return _context.AssetRequest.Any(e => e.Id == id);
         }

@@ -122,22 +122,15 @@
         var isIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserIntern")));
 
         function viewFormatter(value, row, index) {
-            @*var editUrl = '@Url.Action("Edit", "AssetRequests")' + '/' + row.id;
-            var deleteUrl = '@Url.Action("Delete", "AssetRequests")' + '/' + row.id;*@
             var detailsUrl = '@Url.Action("Details", "AssetRequests")' + '/' + row.id;
+            var editUrl = '@Url.Action("Edit", "AssetRequests")' + '/' + row.id;
 
+            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-info btn-sm">Details</a>';
+            var editBtn = (isAdmin || isManagerIT || isIntern) ? '&nbsp;<a href="' + editUrl + '" class="btn btn-warning btn-sm">Edit</a>' : '';
 
-            @*var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-warning">Edit</a>';
-            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="confirmDelete(' + row.id + ')">Delete</button>';*@
-            var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-info">Details</a>';
-
-            if (isAdmin) {
-                return detailsBtn;
-            } else if (isManagerIT || isIntern || isEmployee) {
-                return detailsBtn;
-            }
-            return detailsBtn;
+            return detailsBtn + editBtn;
         }
+
         // Permintaan Ekspor PDF Hanya untuk Admin, Manager IT dan Intern
         if (isAdmin || isManagerIT || isIntern) {
             document.getElementById('exportPdfBtn').addEventListener('click', function () {

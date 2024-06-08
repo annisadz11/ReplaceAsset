@@ -6,18 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReplaceAsset.Migrations
 {
     /// <inheritdoc />
-    public partial class AddModelToTableDb : Migration
+    public partial class AddTableToDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "IT-App_Schema");
+
             migrationBuilder.CreateTable(
                 name: "AssetRequest",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Departement = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -38,6 +43,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AssetScrap",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -55,6 +61,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "NewHire",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -80,6 +87,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserAdmins",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -95,6 +103,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserInterns",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -110,6 +119,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserManagerITs",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -125,6 +135,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ComponentAssetReplacement",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -140,6 +151,7 @@ namespace ReplaceAsset.Migrations
                     table.ForeignKey(
                         name: "FK_ComponentAssetReplacement_AssetRequest_AssetRequestId",
                         column: x => x.AssetRequestId,
+                        principalSchema: "IT-App_Schema",
                         principalTable: "AssetRequest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -147,6 +159,7 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateTable(
                 name: "NewAssetReplacement",
+                schema: "IT-App_Schema",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -163,6 +176,7 @@ namespace ReplaceAsset.Migrations
                     table.ForeignKey(
                         name: "FK_NewAssetReplacement_AssetRequest_AssetRequestId",
                         column: x => x.AssetRequestId,
+                        principalSchema: "IT-App_Schema",
                         principalTable: "AssetRequest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -170,12 +184,14 @@ namespace ReplaceAsset.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComponentAssetReplacement_AssetRequestId",
+                schema: "IT-App_Schema",
                 table: "ComponentAssetReplacement",
                 column: "AssetRequestId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_NewAssetReplacement_AssetRequestId",
+                schema: "IT-App_Schema",
                 table: "NewAssetReplacement",
                 column: "AssetRequestId",
                 unique: true);
@@ -185,28 +201,36 @@ namespace ReplaceAsset.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AssetScrap");
+                name: "AssetScrap",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "ComponentAssetReplacement");
+                name: "ComponentAssetReplacement",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "NewAssetReplacement");
+                name: "NewAssetReplacement",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "NewHire");
+                name: "NewHire",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "UserAdmins");
+                name: "UserAdmins",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "UserInterns");
+                name: "UserInterns",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "UserManagerITs");
+                name: "UserManagerITs",
+                schema: "IT-App_Schema");
 
             migrationBuilder.DropTable(
-                name: "AssetRequest");
+                name: "AssetRequest",
+                schema: "IT-App_Schema");
         }
     }
 }

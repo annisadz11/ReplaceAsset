@@ -17,6 +17,7 @@ namespace ReplaceAsset.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("IT-App_Schema")
                 .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -82,7 +83,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AssetRequest");
+                    b.ToTable("AssetRequest", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.AssetScrap", b =>
@@ -113,7 +114,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AssetScrap");
+                    b.ToTable("AssetScrap", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.ComponentAssetReplacement", b =>
@@ -142,7 +143,7 @@ namespace ReplaceAsset.Migrations
                     b.HasIndex("AssetRequestId")
                         .IsUnique();
 
-                    b.ToTable("ComponentAssetReplacement");
+                    b.ToTable("ComponentAssetReplacement", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.NewAssetReplacement", b =>
@@ -176,7 +177,7 @@ namespace ReplaceAsset.Migrations
                     b.HasIndex("AssetRequestId")
                         .IsUnique();
 
-                    b.ToTable("NewAssetReplacement");
+                    b.ToTable("NewAssetReplacement", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.NewHire", b =>
@@ -234,7 +235,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NewHire");
+                    b.ToTable("NewHire", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.UserAdmin", b =>
@@ -259,7 +260,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAdmins");
+                    b.ToTable("UserAdmins", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.UserIntern", b =>
@@ -284,7 +285,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserInterns");
+                    b.ToTable("UserInterns", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.UserManagerIT", b =>
@@ -309,7 +310,7 @@ namespace ReplaceAsset.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserManagerITs");
+                    b.ToTable("UserManagerITs", "IT-App_Schema");
                 });
 
             modelBuilder.Entity("ReplaceAsset.Models.ComponentAssetReplacement", b =>
