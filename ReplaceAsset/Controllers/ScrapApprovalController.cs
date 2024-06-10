@@ -33,10 +33,14 @@ namespace ReplaceAsset.Controllers
 
         // API ENDPOINT
         [HttpGet]
-        public IActionResult GetData()
+        public IActionResult GetData(DateTime? startDate, DateTime? endDate)
         {
+            // Filtering AssetScrap based on provided date range
             var pendingScraps = _context.AssetScrap
-                .Where(a => a.ValidationScrap == false)
+                .Where(a =>
+                    (!startDate.HasValue || a.DateInput >= startDate) &&
+                    (!endDate.HasValue || a.DateInput <= endDate) &&
+                    a.ValidationScrap == false)
                 .Select(a => new
                 {
                     id = a.Id,
@@ -50,7 +54,6 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { rows = pendingScraps });
         }
-
         [HttpPost]
         public IActionResult ApproveScrap(int id)
         {

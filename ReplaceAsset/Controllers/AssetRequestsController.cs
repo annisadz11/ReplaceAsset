@@ -415,9 +415,6 @@ namespace ReplaceAsset.Controllers
 
             return Json(result);
         }
-
-
-
         private bool AssetRequestExists(int id)
         {
             return _context.AssetRequest.Any(e => e.Id == id);

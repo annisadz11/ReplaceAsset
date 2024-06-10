@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ContentModel;
 using ReplaceAsset.Data;
 using ReplaceAsset.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -21,12 +23,55 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-		[HttpGet]
-		public IActionResult GetTotalNewHires()
-		{
-			var totalNewHires = _context.NewHire.Count();
-			return Json(totalNewHires);
-		}
+        [HttpGet]
+        public IActionResult GetTotalNewHires()
+        {
+            var totalNewHires = _context.NewHire.Count();
+            return Json(totalNewHires);
+        }
+
+        // Endpoint untuk Ekspor ke Excel
+        public IActionResult ExportToExcel()
+        {
+            var newHires = _context.NewHire.ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                // Mengubah nama worksheet menjadi "New Hires" dengan spasi
+                var worksheet = workbook.Worksheets.Add("New Hires");
+
+                // Membuat header pada Excel dengan nama kolom memiliki spasi yang sesuai
+                worksheet.Cell(1, 1).Value = "Name";
+                worksheet.Cell(1, 2).Value = "Department";
+                worksheet.Cell(1, 3).Value = "Designation";
+                worksheet.Cell(1, 4).Value = "Serial Number";
+                worksheet.Cell(1, 5).Value = "Device";
+                worksheet.Cell(1, 6).Value = "Model Asset";
+                worksheet.Cell(1, 7).Value = "Date Of Join";
+                worksheet.Cell(1, 8).Value = "Status Completed";
+
+                // Mengisi data pada Excel
+                for (int i = 0; i < newHires.Count; i++)
+                {
+                    worksheet.Cell(i + 2, 1).Value = newHires[i].Name;
+                    worksheet.Cell(i + 2, 2).Value = newHires[i].Department;
+                    worksheet.Cell(i + 2, 3).Value = newHires[i].Designation;
+                    worksheet.Cell(i + 2, 4).Value = newHires[i].SerialNumber;
+                    worksheet.Cell(i + 2, 5).Value = newHires[i].Device;
+                    worksheet.Cell(i + 2, 6).Value = newHires[i].ModelAsset;
+                    worksheet.Cell(i + 2, 7).Value = newHires[i].DateOfJoin.HasValue ? newHires[i].DateOfJoin.Value.ToString("dd MMM yyyy HH:mm") : null;
+                    worksheet.Cell(i + 2, 8).Value = newHires[i].StatusCompleted ? "Done Deploy" : "Waiting for Deploy";
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    // Mengubah nama file menjadi "New Hires.xlsx" dengan spasi
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "New Hires.xlsx");
+                }
+            }
+        }
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
@@ -37,10 +82,18 @@ namespace ReplaceAsset.Controllers
         }
 
         // API ENDPOINT
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         [HttpGet]
-        public IActionResult GetData()
+        public IActionResult GetData(DateTime? startDate, DateTime? endDate)
         {
-            var newHire = _context.NewHire
+            var newHireQuery = _context.NewHire.AsQueryable();
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                newHireQuery = newHireQuery.Where(a => a.DateOfJoin >= startDate && a.DateOfJoin <= endDate);
+            }
+
+            var newHire = newHireQuery
                 .Select(a => new
                 {
                     id = a.Id,
@@ -61,6 +114,40 @@ namespace ReplaceAsset.Controllers
                 .ToList();
 
             return Json(new { rows = newHire });
+        }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [HttpGet]
+        public IActionResult GetDataByStatus(string status)
+        {
+            List<NewHire> newHires = null;
+
+            switch (status.ToLower())
+            {
+                case "done":
+                    newHires = _context.NewHire.Where(nh => nh.StatusCompleted == true).ToList();
+                    break;
+                case "waiting":
+                    newHires = _context.NewHire.Where(nh => nh.StatusCompleted == false).ToList();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            var result = newHires.Select(nh => new
+            {
+                id = nh.Id,
+                name = nh.Name,
+                department = nh.Department,
+                designation = nh.Designation,
+                serialNumber = nh.SerialNumber,
+                device = nh.Device,
+                modelAsset = nh.ModelAsset,
+                dateOfJoin = nh.DateOfJoin.HasValue ? nh.DateOfJoin.Value.ToString("dd MMM yyyy HH:mm") : null,
+                statusCompleted = nh.StatusCompleted
+            }).ToList();
+
+            return Json(result);
         }
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
@@ -161,27 +248,49 @@ namespace ReplaceAsset.Controllers
             }
             return View(newHire);
         }
-
-
-
-        [HttpPost]
-        [Authorize(Roles = "UserAdmin,UserIntern,UserManagerIT")]
-        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
+        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteNewHire request)
         {
-            var newHires = _context.NewHire.Where(r => ids.Contains(r.Id)).ToList();
-            if (newHires.Count == 0)
+            if (request == null || !request.Ids.Any())
             {
-                return Json(new { success = false, message = "No new hires found." });
+                return BadRequest("No items selected for deletion.");
+            }
+
+            IEnumerable<NewHire> newHires;
+
+            switch (request.Status.ToLower())
+            {
+                case "done": // Memetakan "done" ke status yang sesuai
+                    newHires = await _context.NewHire.Where(ar => request.Ids.Contains(ar.Id) && ar.StatusCompleted == true).ToListAsync();
+                    break;
+                case "waiting": // sudah sesuai
+                    newHires = await _context.NewHire.Where(ar => request.Ids.Contains(ar.Id) && ar.StatusCompleted == false).ToListAsync();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            if (!newHires.Any())
+            {
+                return NotFound("No requests found with the specified status.");
             }
 
             _context.NewHire.RemoveRange(newHires);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = $"{newHires.Count} new hires have been deleted successfully." });
+            return Json(new { success = true, message = "Selected data new hires were deleted successfully." });
         }
+
         private bool NewHireExists(int id)
         {
             return _context.NewHire.Any(e => e.Id == id);
+        }
+
+        // Additional Model for Delete New Hire
+        public class DeleteNewHire
+        {
+            public List<int> Ids { get; set; }
+            public string Status { get; set; }
         }
     }
 }

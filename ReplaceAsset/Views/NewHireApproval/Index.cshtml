@@ -1,15 +1,26 @@
-﻿@{
+﻿﻿@{
     ViewData["Title"] = "Approval New Hires";
 }
 
 <link href="~/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
 <link href="~/vendor/bootstrap-table/bootstrap-table-sticky-header.css" rel="stylesheet" />
+<link href="~/vendor/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
 
 <div class="row gutters mt-4">
     <div class="card">
-        <div class="card-header text-center" style="font-size: 1.0rem;">New Hire Approval</div>
+        <div class="card-header text-center" style="font-size: 1.25rem;">Approval New Hires</div>
         <hr class="m-0" />
         <div class="card-body">
+            <!-- Breadcrumb -->
+            <partial name="_Breadcrumb" />
+            <!-- Date Range Picker -->
+            <div class="input-group mb-3">
+                <span class="input-group-text">Filter by Date</span>
+                <input type="text" id="dateRangePicker" class="form-control">
+                <button id="applyDateFilter" class="btn btn-primary">Apply</button>
+                <button id="resetDateFilter" class="btn btn-secondary">Reset Filter</button>
+            </div>
+            <!-- Toolbar -->
             <table id="table"
                    data-toggle="table"
                    data-locale="en-US"
@@ -96,17 +107,52 @@
     <script src="~/vendor/bootstrap-table/bootstrap-table-filter-control.min.js"></script>
     <script src="~/vendor/notyf/notyf.min.js"></script>
     <script src="~/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/vendor/moment/moment.min.js"></script>
+    <script src="~/vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script>
+        // Initialize date range picker
+        $(function () {
+            $('#dateRangePicker').daterangepicker({
+                locale: {
+                    format: 'DD MMM YYYY' // Format tanggal dd MMM YYYY
+                },
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month')
+            });
+        });
+
+        $('#applyDateFilter').on('click', function () {
+            var range = $('#dateRangePicker').val().split(' - ');
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: range[0],
+                    endDate: range[1]
+                }
+            });
+        });
+
+        $('#resetDateFilter').on('click', function () {
+            $('#dateRangePicker').data('daterangepicker').setStartDate(moment().startOf('month'));
+            $('#dateRangePicker').data('daterangepicker').setEndDate(moment().endOf('month'));
+            $('#dateRangePicker').val(''); // Mengosongkan nilai date range picker
+            $('#table').bootstrapTable('refresh', {
+                query: {
+                    startDate: '',
+                    endDate: ''
+                }
+            });
+        });
+
         function statusFormatter(value, row, index) {
             var checklist = `
-                        <ul class="list-unstyled mb-0">
-                            <li><i class="fas fa-check-circle text-success"></i> Headset: ${row.headsetGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Laptop: ${row.laptopGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Adaptor: ${row.adaptorGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Power Cable: ${row.powerCableGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Bag: ${row.bagGiven ? 'Yes' : 'No'}</li>
-                        </ul>
-                    `;
+                                <ul class="list-unstyled mb-0">
+                                    <li><i class="fas fa-check-circle text-success"></i> Headset: ${row.headsetGiven ? 'Yes' : 'No'}</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Laptop: ${row.laptopGiven ? 'Yes' : 'No'}</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Adaptor: ${row.adaptorGiven ? 'Yes' : 'No'}</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Power Cable: ${row.powerCableGiven ? 'Yes' : 'No'}</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Bag: ${row.bagGiven ? 'Yes' : 'No'}</li>
+                                </ul>
+                            `;
             if (value) {
                 return `<span class="badge rounded-pill text-bg-success" data-bs-toggle="popover" data-bs-html="true" title="Checklist" data-bs-content="${checklist.replace(/"/g, '&quot;')}">Done Deploy</span>`;
             } else {
@@ -115,8 +161,8 @@
         }
 
         function actionFormatter(value, row, index) {
-            var updateBtn = '<button class="btn btn-sm btn-success" onclick="showUpdateModal(' + row.id + ')">Update</button>';
-            var detailsBtn = '<a href="@Url.Action("Details", "NewHires")/' + row.id + '" class="btn btn-sm btn-info">Details</a>';
+            var updateBtn = '<button class="btn btn-sm btn-primary" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+            var detailsBtn = '<a href="@Url.Action("Details", "NewHires")/' + row.id + '" class="btn btn-sm btn-dark">Details</a>';
             return updateBtn + ' ' + detailsBtn;
         }
 

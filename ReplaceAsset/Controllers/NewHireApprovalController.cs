@@ -33,13 +33,21 @@ namespace ReplaceAsset.Controllers
 
             return View(newHires);
         }
-
         // API ENDPOINT
         [HttpGet]
-        public IActionResult GetData()
+        public IActionResult GetData([FromQuery] string startDate, [FromQuery] string endDate)
         {
-            var newHire = _context.NewHire
-                .Where(nh => !nh.StatusCompleted) // Fetch only "waiting for deploy"
+            var query = _context.NewHire.AsQueryable();
+
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                var start = DateTime.Parse(startDate);
+                var end = DateTime.Parse(endDate).AddDays(1).AddTicks(-1); // Include whole day of endDate
+                query = query.Where(nh => nh.DateOfJoin >= start && nh.DateOfJoin <= end);
+            }
+
+            var newHires = query
+                .OrderBy(nh => nh.DateOfJoin)
                 .Select(a => new
                 {
                     id = a.Id,
@@ -49,7 +57,7 @@ namespace ReplaceAsset.Controllers
                     serialNumber = a.SerialNumber,
                     device = a.Device,
                     modelAsset = a.ModelAsset,
-                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy HH:mm") : null,
+                    dateOfJoin = a.DateOfJoin.HasValue ? a.DateOfJoin.Value.ToString("dd MMM yyyy") : null,
                     statusCompleted = a.StatusCompleted,
                     headsetGiven = a.HeadsetGiven,
                     laptopGiven = a.LaptopGiven,
@@ -59,7 +67,7 @@ namespace ReplaceAsset.Controllers
                 })
                 .ToList();
 
-            return Json(new { rows = newHire });
+            return Json(newHires);
         }
 
         [HttpPost]

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
+using DinkToPdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,12 +24,12 @@ namespace ReplaceAsset.Controllers
         }
 
         //Endpoint untuk Total Scrap
-		[HttpGet]
-		public IActionResult GetTotalScraps()
-		{
-			var totalScraps = _context.AssetScrap.Count();
-			return Json(totalScraps);
-		}
+        [HttpGet]
+        public IActionResult GetTotalScraps()
+        {
+            var totalScraps = _context.AssetScrap.Count();
+            return Json(totalScraps);
+        }
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         // GET: AssetScraps
@@ -36,10 +39,14 @@ namespace ReplaceAsset.Controllers
         }
 
         // API ENDPOINT
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         [HttpGet]
-        public IActionResult GetData()
+        public IActionResult GetData(DateTime? startDate, DateTime? endDate)
         {
             var assetScraps = _context.AssetScrap
+                .Where(ar =>
+                    (!startDate.HasValue || ar.DateInput >= startDate) &&
+                    (!endDate.HasValue || ar.DateInput <= endDate))
                 .Select(a => new
                 {
                     id = a.Id,
@@ -52,6 +59,73 @@ namespace ReplaceAsset.Controllers
                 .ToList();
 
             return Json(new { rows = assetScraps });
+        }
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [HttpGet]
+        public IActionResult GetDataByStatus(string status)
+        {
+            List<AssetScrap> assetScraps = null;
+
+            switch (status.ToLower())
+            {
+                case "done":
+                    assetScraps = _context.AssetScrap.Where(ar => ar.ValidationScrap == true).ToList();
+                    break;
+                case "pending":
+                    assetScraps = _context.AssetScrap.Where(ar => ar.ValidationScrap == false).ToList();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
+            }
+
+            var result = assetScraps.Select(g => new
+            {
+                id = g.Id,
+                type = g.Type,
+                serialNumber = g.SerialNumber,
+                location = g.Location,
+                dateInput = g.DateInput.HasValue ? g.DateInput.Value.ToString("dd MMM yyyy HH:mm") : null,
+                validationScrap = g.ValidationScrap ? "Done" : "Pending"
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        public IActionResult ExportToExcel()
+        {
+            var assetScraps = _context.AssetScrap.ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                // Mengubah nama worksheet menjadi "Asset Scraps"
+                var worksheet = workbook.Worksheets.Add("Asset Scraps");
+
+                // Membuat header pada Excel dengan nama kolom
+                worksheet.Cell(1, 1).Value = "Type";
+                worksheet.Cell(1, 2).Value = "Serial Number";
+                worksheet.Cell(1, 3).Value = "Location";
+                worksheet.Cell(1, 4).Value = "Date Input";
+                worksheet.Cell(1, 5).Value = "Validation Scrap";
+
+                // Mengisi data pada Excel
+                for (int i = 0; i < assetScraps.Count; i++)
+                {
+                    worksheet.Cell(i + 2, 1).Value = assetScraps[i].Type;
+                    worksheet.Cell(i + 2, 2).Value = assetScraps[i].SerialNumber;
+                    worksheet.Cell(i + 2, 3).Value = assetScraps[i].Location;
+                    worksheet.Cell(i + 2, 4).Value = assetScraps[i].DateInput.HasValue ? assetScraps[i].DateInput.Value.ToString("dd MMM yyyy HH:mm") : null;
+                    worksheet.Cell(i + 2, 5).Value = assetScraps[i].ValidationScrap ? "Done Scrap" : "Pending";
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    // Mengubah nama file menjadi "Asset Scraps.xlsx"
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Asset Scraps.xlsx");
+                }
+            }
         }
 
         [Authorize(Roles = "UserAdmin,UserIntern")]
@@ -144,32 +218,53 @@ namespace ReplaceAsset.Controllers
 
             return View(assetScrap);
         }
-        [Authorize(Roles = "UserAdmin,UserIntern,UserManagerIT")]
-
+        [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
         [HttpPost]
-        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteScrap request)
         {
-            try
+            if (request == null || !request.Ids.Any())
             {
-                var assetScraps = await _context.AssetScrap.Where(r => ids.Contains(r.Id)).ToListAsync();
-                if (!assetScraps.Any())
-                {
-                    return Json(new { success = false, message = "No asset scraps found." });
-                }
-
-                _context.AssetScrap.RemoveRange(assetScraps);
-                await _context.SaveChangesAsync();
-
-                return Json(new { success = true, message = $"{assetScraps.Count} asset scraps have been deleted successfully." });
+                return BadRequest("No items selected for deletion.");
             }
-            catch (Exception e)
+
+            IEnumerable<AssetScrap> assetScrap;
+
+            switch (request.Status.ToLower())
             {
-                return Json(new { success = false, message = $"An error occurred: {e.Message}" });
+                case "done":
+                    assetScrap = await _context.AssetScrap
+                        .Where(ar => request.Ids.Contains(ar.Id) && ar.ValidationScrap == true)
+                        .ToListAsync();
+                    break;
+                case "pending":
+                    assetScrap = await _context.AssetScrap
+                        .Where(ar => request.Ids.Contains(ar.Id) && ar.ValidationScrap == false)
+                        .ToListAsync();
+                    break;
+                default:
+                    return BadRequest("Invalid status selected.");
             }
+
+            if (!assetScrap.Any())
+            {
+                return NotFound("No asset scraps found with the specified status.");
+            }
+
+            _context.AssetScrap.RemoveRange(assetScrap);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Selected asset scraps were deleted successfully." });
         }
+
         private bool AssetScrapExists(int id)
         {
             return _context.AssetScrap.Any(e => e.Id == id);
+        }
+
+        public class DeleteScrap
+        {
+            public List<int> Ids { get; set; }
+            public string Status { get; set; }
         }
     }
 }
