@@ -33,6 +33,10 @@
     {
       "library": "bootstrap-daterangepicker@3.0.5",
       "destination": "wwwroot/vendor/bootstrap-daterangepicker/"
+    },
+    {
+      "library": "jspdf-autotable@3.8.2",
+      "destination": "wwwroot/vendor/jspdf-autotable/"
     }
   ]
 }

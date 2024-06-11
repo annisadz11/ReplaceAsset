@@ -89,7 +89,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a asp-action="Index" class="btn btn-secondary data-dismiss="modal">Cancel</a>
+                <a asp-action="Index" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                 <button type="button" class="btn btn-primary" id="approveButton">Approve</button>
             </div>
         </div>
@@ -102,7 +102,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">Enter Justification for Rejection</h5>
-
             </div>
             <div class="modal-body">
                 <form>
@@ -113,7 +112,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a asp-action="Index" class="btn btn-secondary data-dismiss="modal">Cancel</a>
+                <a asp-action="Index" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                 <button type="button" class="btn btn-danger" id="rejectButton">Reject</button>
             </div>
         </div>
@@ -161,6 +160,7 @@
                 }
             });
         });
+
         function statusFormatter(value, row, index) {
             let statusHtml;
             if (value === null) {

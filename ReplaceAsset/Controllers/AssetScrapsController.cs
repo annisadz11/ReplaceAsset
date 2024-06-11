@@ -74,6 +74,9 @@ namespace ReplaceAsset.Controllers
                 case "pending":
                     assetScraps = _context.AssetScrap.Where(ar => ar.ValidationScrap == false).ToList();
                     break;
+                case "all":
+                    assetScraps = _context.AssetScrap.ToList();
+                    break;
                 default:
                     return BadRequest("Invalid status selected.");
             }
@@ -199,7 +202,6 @@ namespace ReplaceAsset.Controllers
             }
             return Json(new { success = false, message = "Model state is invalid." });
         }
-
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         public async Task<IActionResult> Details(int? id)
@@ -220,51 +222,67 @@ namespace ReplaceAsset.Controllers
         }
         [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
         [HttpPost]
-        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteScrap request)
+        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteScrapRequest request)
         {
-            if (request == null || !request.Ids.Any())
+            if (request == null || string.IsNullOrEmpty(request.Status))
             {
-                return BadRequest("No items selected for deletion.");
+                return BadRequest("Invalid request.");
             }
 
-            IEnumerable<AssetScrap> assetScrap;
+            IEnumerable<AssetScrap> assetScraps = null;
 
             switch (request.Status.ToLower())
             {
                 case "done":
-                    assetScrap = await _context.AssetScrap
-                        .Where(ar => request.Ids.Contains(ar.Id) && ar.ValidationScrap == true)
-                        .ToListAsync();
+                    assetScraps = await _context.AssetScrap.Where(x => x.ValidationScrap == true).ToListAsync();
                     break;
                 case "pending":
-                    assetScrap = await _context.AssetScrap
-                        .Where(ar => request.Ids.Contains(ar.Id) && ar.ValidationScrap == false)
-                        .ToListAsync();
+                    assetScraps = await _context.AssetScrap.Where(x => x.ValidationScrap == false).ToListAsync();
+                    break;
+                case "all":
+                    assetScraps = await _context.AssetScrap.ToListAsync();
                     break;
                 default:
                     return BadRequest("Invalid status selected.");
             }
 
-            if (!assetScrap.Any())
+            if (!assetScraps.Any())
             {
                 return NotFound("No asset scraps found with the specified status.");
             }
 
-            _context.AssetScrap.RemoveRange(assetScrap);
+            _context.AssetScrap.RemoveRange(assetScraps);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Selected asset scraps were deleted successfully." });
+            return Json(new { success = true, message = "Asset scraps with the selected status were deleted successfully." });
         }
+
+        public class DeleteScrapRequest
+        {
+            public string Status { get; set; }
+            public List<int> Ids { get; set; }
+        }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var assetScrap = await _context.AssetScrap.FindAsync(id);
+            if (assetScrap == null)
+            {
+                return Json(new { success = false, message = "Asset scrap not found." });
+            }
+
+            _context.AssetScrap.Remove(assetScrap);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Asset scrap deleted successfully." });
+        }
+
 
         private bool AssetScrapExists(int id)
         {
             return _context.AssetScrap.Any(e => e.Id == id);
         }
 
-        public class DeleteScrap
-        {
-            public List<int> Ids { get; set; }
-            public string Status { get; set; }
-        }
     }
 }

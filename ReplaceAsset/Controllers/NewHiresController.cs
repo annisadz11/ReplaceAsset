@@ -73,7 +73,6 @@ namespace ReplaceAsset.Controllers
             }
         }
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
@@ -130,6 +129,9 @@ namespace ReplaceAsset.Controllers
                     break;
                 case "waiting":
                     newHires = _context.NewHire.Where(nh => nh.StatusCompleted == false).ToList();
+                    break;
+                case "all":
+                    newHires = _context.NewHire.ToList();
                     break;
                 default:
                     return BadRequest("Invalid status selected.");
@@ -250,22 +252,26 @@ namespace ReplaceAsset.Controllers
             return View(newHire);
         }
         [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
-        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteNewHire request)
+        [HttpPost]
+        public async Task<IActionResult> DeleteByStatus([FromBody] StatusRequest statusRequest)
         {
-            if (request == null || !request.Ids.Any())
+            if (statusRequest == null || string.IsNullOrEmpty(statusRequest.Status))
             {
-                return BadRequest("No items selected for deletion.");
+                return BadRequest("Invalid status selected.");
             }
 
-            IEnumerable<NewHire> newHires;
+            IEnumerable<NewHire> newHires = null;
 
-            switch (request.Status.ToLower())
+            switch (statusRequest.Status.ToLower())
             {
-                case "done": // Memetakan "done" ke status yang sesuai
-                    newHires = await _context.NewHire.Where(ar => request.Ids.Contains(ar.Id) && ar.StatusCompleted == true).ToListAsync();
+                case "done":
+                    newHires = await _context.NewHire.Where(x => x.StatusCompleted == true).ToListAsync();
                     break;
-                case "waiting": // sudah sesuai
-                    newHires = await _context.NewHire.Where(ar => request.Ids.Contains(ar.Id) && ar.StatusCompleted == false).ToListAsync();
+                case "waiting":
+                    newHires = await _context.NewHire.Where(x => x.StatusCompleted == false).ToListAsync();
+                    break;
+                case "all":
+                    newHires = await _context.NewHire.ToListAsync();
                     break;
                 default:
                     return BadRequest("Invalid status selected.");
@@ -273,13 +279,33 @@ namespace ReplaceAsset.Controllers
 
             if (!newHires.Any())
             {
-                return NotFound("No requests found with the specified status.");
+                return NotFound("No new hires found with the specified status.");
             }
 
             _context.NewHire.RemoveRange(newHires);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Selected data new hires were deleted successfully." });
+            return Json(new { success = true, message = "New hires with the selected status were deleted successfully." });
+        }
+
+        public class StatusRequest
+        {
+            public string Status { get; set; }
+        }
+
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var newHires = await _context.NewHire.FindAsync(id);
+            if (newHires == null)
+            {
+                return Json(new { success = false, message = "New Hire not found." });
+            }
+
+            _context.NewHire.Remove(newHires);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Data New Hire deleted successfully." });
         }
 
         private bool NewHireExists(int id)
@@ -287,11 +313,6 @@ namespace ReplaceAsset.Controllers
             return _context.NewHire.Any(e => e.Id == id);
         }
 
-        // Additional Model for Delete New Hire
-        public class DeleteNewHire
-        {
-            public List<int> Ids { get; set; }
-            public string Status { get; set; }
-        }
+
     }
 }

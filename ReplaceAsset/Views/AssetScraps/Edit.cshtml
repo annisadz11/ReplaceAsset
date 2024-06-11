@@ -1,7 +1,7 @@
 ﻿@model ReplaceAsset.Models.AssetScrap
 
 @{
-    ViewData["Title"] = "Asset Scraps";
+    ViewData["Title"] = "Edit Asset Scrap";
 }
 
 <div class="row gutters justify-content-center">
@@ -72,6 +72,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="~/vendor/notyf/notyf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             $('#editForm').submit(function (event) {
@@ -94,13 +96,15 @@
                                 types: [
                                     {
                                         type: 'success',
-                                        background: 'green',
+                                        background: '#32a852',
                                         icon: false
                                     }
                                 ]
                             });
                             notyf.success(data.message);
-                            window.location.href = '@Url.Action("Index", "AssetScraps")'; // Redirect to Index after successful update
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("Index", "AssetScraps")'; // Redirect to Index after successful update
+                            }, 2000); // Delay redirect to allow the notyf message to be seen
                         } else {
                             Swal.fire({
                                 title: 'Error',
