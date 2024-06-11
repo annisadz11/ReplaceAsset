@@ -75,6 +75,8 @@ namespace ReplaceAsset.Controllers
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
+
         // GET: NewHires
         public async Task<IActionResult> Index()
         {
@@ -115,7 +117,6 @@ namespace ReplaceAsset.Controllers
 
             return Json(new { rows = newHire });
         }
-
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         [HttpGet]
         public IActionResult GetDataByStatus(string status)

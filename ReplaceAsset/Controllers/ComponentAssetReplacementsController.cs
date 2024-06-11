@@ -92,6 +92,30 @@ namespace ReplaceAsset.Controllers
             return Json(new { success = false, message = "Component already replaced." });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteByStatus([FromBody] DeleteStatusRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Status))
+            {
+                return BadRequest("Status is required.");
+            }
+
+            bool statusBool = request.Status.Equals("done", StringComparison.OrdinalIgnoreCase);
+            var componentsToDelete = await _context.ComponentAssetReplacement
+                .Where(c => c.ValidationReplace == statusBool)
+                .ToListAsync();
+
+            if (!componentsToDelete.Any())
+            {
+                return NotFound("No items found to delete.");
+            }
+
+            _context.ComponentAssetReplacement.RemoveRange(componentsToDelete);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Items deleted successfully." });
+        }
+
 
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
@@ -112,6 +136,10 @@ namespace ReplaceAsset.Controllers
             }
 
             return View(componentAssetReplacement);
+        }
+        public class DeleteStatusRequest
+        {
+            public string Status { get; set; }
         }
 
     }

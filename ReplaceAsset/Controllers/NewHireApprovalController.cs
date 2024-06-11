@@ -21,7 +21,6 @@ namespace ReplaceAsset.Controllers
             _context = context;
         }
 
-        // GET: NewHireApproval
         public async Task<IActionResult> Index()
         {
             // Fetch only new hires that are "waiting for deploy"
@@ -33,11 +32,10 @@ namespace ReplaceAsset.Controllers
 
             return View(newHires);
         }
-        // API ENDPOINT
         [HttpGet]
         public IActionResult GetData([FromQuery] string startDate, [FromQuery] string endDate)
         {
-            var query = _context.NewHire.AsQueryable();
+            var query = _context.NewHire.Where(nh => !nh.StatusCompleted).AsQueryable(); // Tambahkan kondisi ini
 
             if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
             {

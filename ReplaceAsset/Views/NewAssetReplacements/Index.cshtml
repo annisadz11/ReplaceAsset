@@ -39,12 +39,12 @@
                 <thead>
                     <tr>
                         <th data-field="assetRequestName" data-sortable="true" data-width="200">Requestor</th>
-@*                         <th data-field="assetRequestDepartment" data-sortable="true" data-width="150">Department</th>
+                         <th data-field="assetRequestDepartment" data-sortable="true" data-width="150">Department</th>
                         <th data-field="assetRequestType" data-sortable="true" data-width="100">Type</th>
                         <th data-field="assetRequestSerialNumber" data-sortable="true" data-width="150">Serial Number</th>
                         <th data-field="assetRequestBaseline" data-sortable="true" data-width="150">Baseline</th>
                         <th data-field="assetRequestUsageLocation" data-sortable="true" data-width="150">Usage Location</th>
- *@                        <th data-field="assetRequestReason" data-sortable="true" data-width="300">Reason</th>
+                         <th data-field="assetRequestReason" data-sortable="true" data-width="300">Reason</th>
                         <th data-field="assetRequestJustify" data-sortable="true" data-width="200">Justify</th>
                         <th data-field="assetRequestTypeReplace" data-sortable="true" data-width="200">Type Replace</th>
                         <th data-field="assetRequestApprovalDate" data-sortable="true" data-width="150">Approval Date</th>
@@ -111,23 +111,23 @@
         var isAdminOrIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin") || User.IsInRole("UserIntern")));
 
         function actionFormatter(value, row, index) {
-            var detailsBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showDetails(' + row.id + ')">Details</button>';
+            var detailsBtn = '<button type="button" class="btn btn-sm btn-dark" onclick="showDetails(' + row.id + ')">Details</button>';
             var updateBtn = '';
 
             if (!row.dateReplace && isAdminOrIntern) {
-                updateBtn = '<button type="button" class="btn btn-sm btn-warning" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+                updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
             }
 
             return detailsBtn + ' ' + updateBtn;
         }
 
-        function statusFormatter(value, row, index) {
+        @*function statusFormatter(value, row, index) {
             if (value) {
-                return '<span class="badge badge-success">Done Replaced</span>';
+                return '<span class="badge rounded-pill text-badge-success">Done Replaced</span>';
             } else {
-                return '<span class="badge badge-secondary">Pending</span>';
+                return '<span class="badge rounded-pill text-badge-secondary">Pending</span>';
             }
-        }
+        }*@
 
         function showUpdateModal(id) {
             $.ajax({
