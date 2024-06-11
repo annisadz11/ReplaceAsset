@@ -212,14 +212,14 @@
 
         function statusFormatter(value, row, index) {
             var checklist = `
-                        <ul class="list-unstyled mb-0">
-                            <li><i class="fas fa-check-circle text-success"></i> Headset: ${row.headsetGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Laptop: ${row.laptopGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Adaptor: ${row.adaptorGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Power Cable: ${row.powerCableGiven ? 'Yes' : 'No'}</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Bag: ${row.bagGiven ? 'Yes' : 'No'}</li>
-                        </ul>
-                    `;
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-check-circle text-success"></i> Headset: ${row.headsetGiven ? 'Yes' : 'No'}</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Laptop: ${row.laptopGiven ? 'Yes' : 'No'}</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Adaptor: ${row.adaptorGiven ? 'Yes' : 'No'}</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Power Cable: ${row.powerCableGiven ? 'Yes' : 'No'}</li>
+                    <li><i class="fas fa-check-circle text-success"></i> Bag: ${row.bagGiven ? 'Yes' : 'No'}</li>
+                </ul>
+            `;
             if (value) {
                 return `<span class="badge rounded-pill text-bg-success" data-bs-toggle="popover" data-bs-html="true" title="Checklist" data-bs-content="${checklist.replace(/"/g, '&quot;')}">Done Deploy</span>`;
             } else {

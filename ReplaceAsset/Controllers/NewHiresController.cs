@@ -222,7 +222,8 @@ namespace ReplaceAsset.Controllers
         // POST: NewHires/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Department,Designation,Device,SerialNumber,ModelAsset,DateOfJoin,StatusCompleted,HeadsetGiven,LaptopGiven,AdaptorGiven,PowerCableGiven,BagGiven")] NewHire newHire)
+        // Update method in your NewHiresController.cs
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Department,Designation,Device,SerialNumber,ModelAsset,DateOfJoin,HeadsetGiven,LaptopGiven,AdaptorGiven,PowerCableGiven,BagGiven,StatusCompleted")] NewHire newHire)
         {
             if (id != newHire.Id)
             {
@@ -233,8 +234,22 @@ namespace ReplaceAsset.Controllers
             {
                 try
                 {
+                    var existingNewHire = await _context.NewHire.AsNoTracking().FirstOrDefaultAsync(nh => nh.Id == id);
+
+                    if (existingNewHire == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Only update StatusCompleted if the existing status is not Done Deploy
+                    if (existingNewHire.StatusCompleted)
+                    {
+                        newHire.StatusCompleted = true;
+                    }
+
                     _context.Update(newHire);
                     await _context.SaveChangesAsync();
+
                     return RedirectToAction(nameof(Index), new { returnFromEdit = true });
                 }
                 catch (DbUpdateConcurrencyException)

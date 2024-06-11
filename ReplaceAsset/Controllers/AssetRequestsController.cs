@@ -188,13 +188,13 @@ namespace ReplaceAsset.Controllers
         }
 
 
-        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern,UserEmployee")]
+        [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
         [HttpGet]
         public IActionResult GetDataByStatus(string status)
         {
             List<AssetRequest> assetRequests = null;
 
-            switch (status)
+            switch (status.ToLower())
             {
                 case "approved":
                     assetRequests = _context.AssetRequest.Where(ar => ar.Status == true).ToList();
@@ -204,6 +204,9 @@ namespace ReplaceAsset.Controllers
                     break;
                 case "waiting":
                     assetRequests = _context.AssetRequest.Where(ar => ar.Status == null).ToList();
+                    break;
+                case "all":
+                    assetRequests = _context.AssetRequest.ToList();
                     break;
                 default:
                     return BadRequest("Invalid status selected.");
@@ -338,25 +341,26 @@ namespace ReplaceAsset.Controllers
             smtp.Disconnect(true);
         }
         [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
-        public async Task<IActionResult> DeleteSelectedWithStatus([FromBody] DeleteRequest request)
+        [HttpPost]
+        public async Task<IActionResult> DeleteByStatus([FromBody] StatusRequest statusRequest)
         {
-            if (request == null || !request.Ids.Any())
+            if (statusRequest == null || string.IsNullOrEmpty(statusRequest.Status))
             {
-                return BadRequest("No items selected for deletion.");
+                return BadRequest("Invalid status selected.");
             }
 
-            IEnumerable<AssetRequest> assetRequests;
+            IEnumerable<AssetRequest> assetRequests = null;
 
-            switch (request.Status)
+            switch (statusRequest.Status.ToLower())
             {
                 case "approved":
-                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == true).ToListAsync();
+                    assetRequests = await _context.AssetRequest.Where(ar => ar.Status == true).ToListAsync();
                     break;
                 case "rejected":
-                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == false).ToListAsync();
+                    assetRequests = await _context.AssetRequest.Where(ar => ar.Status == false).ToListAsync();
                     break;
                 case "waiting":
-                    assetRequests = await _context.AssetRequest.Where(ar => request.Ids.Contains(ar.Id) && ar.Status == null).ToListAsync();
+                    assetRequests = await _context.AssetRequest.Where(ar => ar.Status == null).ToListAsync();
                     break;
                 default:
                     return BadRequest("Invalid status selected.");
@@ -371,6 +375,11 @@ namespace ReplaceAsset.Controllers
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, message = "Selected asset requests were deleted successfully." });
+        }
+
+        public class StatusRequest
+        {
+            public string Status { get; set; }
         }
 
         // Fungsi Generate PDF berdasarkan status
@@ -415,6 +424,21 @@ namespace ReplaceAsset.Controllers
 
             return Json(result);
         }
+        [Authorize(Roles = "UserAdmin,UserManagerIT,UserIntern")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var assetRequest = await _context.AssetRequest.FindAsync(id);
+            if (assetRequest == null)
+            {
+                return Json(new { success = false, message = "Asset request not found." });
+            }
+
+            _context.AssetRequest.Remove(assetRequest);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Asset request deleted successfully." });
+        }
+
         private bool AssetRequestExists(int id)
         {
             return _context.AssetRequest.Any(e => e.Id == id);
@@ -427,10 +451,6 @@ namespace ReplaceAsset.Controllers
         }
 
         // Additional Model for Delete Request
-        public class DeleteRequest
-        {
-            public List<int> Ids { get; set; }
-            public string Status { get; set; }
-        }
+       
     }
 }
