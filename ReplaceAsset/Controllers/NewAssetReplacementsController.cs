@@ -20,7 +20,7 @@ namespace ReplacementAsset.Controllers
         }
 
         [HttpGet]
-           public IActionResult GetToTalNewAssetReplacements()
+        public IActionResult GetToTalNewAssetReplacements()
         {
             var totalNewAssetReplacements = _context.NewAssetReplacement.Count();
             return Json(new { totalNewAssetReplacements });

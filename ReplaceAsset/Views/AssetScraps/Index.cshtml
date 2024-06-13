@@ -24,17 +24,14 @@
             <!-- Toolbar -->
             <div id="toolbar" class="d-flex">
                 <div class="btn-group me-2">
-                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserEmployee"))
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserIntern"))
                     {
                         <a class="btn btn-success me-2" asp-action="Create">Add New</a>
                     }
-                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserIntern"))
+                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
                     {
                         <button id="exportPdfBtn" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#pdfModal">PDF</button>
                         <button id="exportExcelBtn" class="btn btn-primary me-2">Excel</button>
-                    }
-                    @if (User.IsInRole("UserAdmin") || User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
-                    {
                         <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button>
                     }
                 </div>

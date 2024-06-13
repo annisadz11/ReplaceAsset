@@ -43,57 +43,57 @@ namespace ReplaceAsset.Controllers
             });
         }
 
-		//Endpoint untuk Apextchart Requestor
-		[HttpGet]
-		public IActionResult GetRequestorData()
-		{
-			var requestCounts = _context.AssetRequest
-				.GroupBy(r => r.RequestDate.HasValue ? r.RequestDate.Value.Month : (int?)null)
-				.Select(g => new
-				{
-					Month = g.Key,
-					Count = g.Count()
-				})
-				.ToList();
+        //Endpoint untuk Apextchart Requestor
+        [HttpGet]
+        public IActionResult GetRequestorData()
+        {
+            var requestCounts = _context.AssetRequest
+                .GroupBy(r => r.RequestDate.HasValue ? r.RequestDate.Value.Month : (int?)null)
+                .Select(g => new
+                {
+                    Month = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
 
-			var requestData = new int[12];
-			foreach (var req in requestCounts)
-			{
-				if (req.Month.HasValue)
-					requestData[req.Month.Value - 1] = req.Count;
-			}
+            var requestData = new int[12];
+            foreach (var req in requestCounts)
+            {
+                if (req.Month.HasValue)
+                    requestData[req.Month.Value - 1] = req.Count;
+            }
 
-			return Json(requestData);
-		}
+            return Json(requestData);
+        }
 
         //Endpoint untuk TotalRequest
-		[HttpGet]
-		public IActionResult GetTotalRequests()
-		{
-			var totalRequests = _context.AssetRequest.Count();
-			return Json(totalRequests);
-		}
+        [HttpGet]
+        public IActionResult GetTotalRequests()
+        {
+            var totalRequests = _context.AssetRequest.Count();
+            return Json(totalRequests);
+        }
 
         //Endpoint untuk RequestHistory
-		[HttpGet]
-		public IActionResult GetRequestHistory()
-		{
-			var requests = _context.AssetRequest
-				.OrderByDescending(r => r.RequestDate)
-				.Select(r => new
-				{
-					r.Id,
-					r.Name,
-					r.Departement,
-					r.Reason,
-					r.Status,
-					r.ApprovalDate
-				})
-				.Take(10) // Menampilkan 10 permintaan terakhir
-				.ToList();
+        [HttpGet]
+        public IActionResult GetRequestHistory()
+        {
+            var requests = _context.AssetRequest
+                .OrderByDescending(r => r.RequestDate)
+                .Select(r => new
+                {
+                    r.Id,
+                    r.Name,
+                    r.Departement,
+                    r.Reason,
+                    r.Status,
+                    r.ApprovalDate
+                })
+                .Take(10) // Menampilkan 10 permintaan terakhir
+                .ToList();
 
-			return Json(requests);
-		}
+            return Json(requests);
+        }
 
 
         // Endpoint untuk Ekspor ke Excel
@@ -305,8 +305,8 @@ namespace ReplaceAsset.Controllers
         }
 
 
-        private async Task SendEmailAsync(string fromEmail, string toEmail, string userEmail, 
-            string subject, string name, string department, string type, string serialNumber, string baseline, 
+        private async Task SendEmailAsync(string fromEmail, string toEmail, string userEmail,
+            string subject, string name, string department, string type, string serialNumber, string baseline,
             string usageLocation, DateTime? requestDate, string reason, string userName)
         {
             var message = new MimeMessage();
@@ -451,6 +451,6 @@ namespace ReplaceAsset.Controllers
         }
 
         // Additional Model for Delete Request
-       
+
     }
 }

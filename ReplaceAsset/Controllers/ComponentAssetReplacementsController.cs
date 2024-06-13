@@ -19,12 +19,12 @@ namespace ReplaceAsset.Controllers
         {
             _context = context;
         }
-		[HttpGet]
-		public IActionResult GetTotalComponentReplacements()
-		{
-			var totalComponentReplacements = _context.ComponentAssetReplacement.Count();
-			return Json(totalComponentReplacements);
-		}
+        [HttpGet]
+        public IActionResult GetTotalComponentReplacements()
+        {
+            var totalComponentReplacements = _context.ComponentAssetReplacement.Count();
+            return Json(totalComponentReplacements);
+        }
         [Authorize(Roles = "UserManagerIT,UserAdmin,UserIntern")]
 
         // GET: ComponentAssetReplacements
