@@ -7,6 +7,16 @@
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
     }
+
+    .time-window-table {
+        width: 100%;
+        max-width: 600px;
+    }
+
+        .time-window-table td {
+            padding: 12px;
+            font-size: 15px;
+        }
 </style>
 
 <div class="container my-5">
@@ -35,19 +45,17 @@
             </table>
         </div>
     </div>
-        <!-- ... -->
 
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card mb- text-center rounded shadow card-hover">
-                    <div class="card-body">
-                        <h4 class="card-title mb-4">Request Replacement</h4>
-                        <img src="~/img/REQUEST.jpg" alt="..." style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
-                        <p class="card-text mb-4">Create, view, and see your asset replacement requests.</p>
-                        <a href="@Url.Action("Index", "AssetRequests")" class="btn btn-primary btn-lg">Go to Requests</a>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb- text-center rounded shadow card-hover">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Request Replacement</h4>
+                    <img src="~/img/REQUEST.jpg" alt="..." style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+                    <p class="card-text mb-4">Create, view, and see your asset replacement requests.</p>
+                    <a href="@Url.Action("Index", "AssetRequests")" class="btn btn-primary btn-lg">Go to Requests</a>
                 </div>
             </div>
         </div>
-
+    </div>
 </div>

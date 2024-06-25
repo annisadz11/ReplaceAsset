@@ -100,12 +100,6 @@
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserManagerITs" ? "active" : null)">
-                        <a asp-controller="UserManagerITs" asp-action="Index">
-                            <i class="bi bi-person-circle"></i>
-                            <span class="menu-text">Manage User Account</span>
-                        </a>
-                    </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
                         <a asp-controller="AssetRequests" asp-action="Index">
                             <i class="bi bi-cart-plus"></i>
@@ -164,12 +158,6 @@
                         <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span class="menu-text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "UserInterns" ? "active" : null)">
-                        <a asp-controller="UserInterns" asp-action="Index">
-                            <i class="bi bi-person-circle"></i>
-                            <span class="menu-text">Manage User Account</span>
                         </a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["controller"].ToString() == "AssetRequests" ? "active" : null)">
