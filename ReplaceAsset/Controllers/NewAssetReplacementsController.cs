@@ -140,5 +140,19 @@ namespace ReplacementAsset.Controllers
 
             return View(newAssetReplacement);
         }
+
+        [Authorize(Roles = "UserAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var newAssetReplacement = await _context.NewAssetReplacement.FindAsync(id);
+            if (newAssetReplacement == null)
+            {
+                return Json(new { success = false, message = "New Asset Replacement not found." });
+            }
+            _context.NewAssetReplacement.Remove(newAssetReplacement);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Data New Asset Replacement deleted successfully." });
+        }
     }
 }

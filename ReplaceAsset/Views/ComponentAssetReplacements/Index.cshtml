@@ -13,11 +13,6 @@
             <!-- Breadcrumb -->
             <partial name="_Breadcrumb" />
             <!-- Toolbar -->
-            <div id="toolbar" class="d-flex">
-                <div class="btn-group me-2">
-                    <button id="deleteBtn" class="btn btn-danger">Delete Selected</button>
-                </div>
-            </div>
             <table id="table"
                    data-toggle="table"
                    data-locale="en-US"
@@ -54,7 +49,14 @@
                         <th data-field="assetRequestApprovalDate" data-sortable="true" data-width="150">Approval Date</th>
                         <th data-field="validationReplace" data-sortable="true" data-formatter="statusFormatter" class="text-center" data-width="150">Validation Replace</th>
                         <th data-field="componentReplaceDate" data-sortable="true" data-width="150">Component Replace Date</th>
-                        <th data-formatter="actionFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        @if (User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
+                        {
+                            <th data-formatter="userFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        }
+                        @if (User.IsInRole("UserAdmin"))
+                        {
+                            <th data-formatter="adminFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        }
                     </tr>
                 </thead>
             </table>
@@ -86,32 +88,6 @@
     </div>
 </div>
 
-<!-- Modal Delete Component Replacement by Status -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete Component Replacement by Status</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="deleteForm">
-                    <div class="form-group mb-3">
-                        <label for="deleteStatus" class="form-label">Select Status</label>
-                        <select class="form-select" id="deleteStatus" name="status" required>
-                            <option value="done">Done Replaced</option>
-                            <option value="pending">Pending</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @section Scripts {
     <script src="~/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="~/vendor/bootstrap-table/bootstrap-table-sticky-header.min.js"></script>
@@ -122,23 +98,7 @@
     <script src="~/vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
 
     <script>
-        function statusFormatter(value, row, index) {
-            let statusHtml;
-            if (value === null) {
-                statusHtml = '<span class="badge rounded-pill text-bg-warning" style="line-height: 1; vertical-align: middle;">Waiting for Approval</span>';
-            } else if (value === true) {
-                statusHtml = '<span class="badge rounded-pill text-bg-success" style="line-height: 1; vertical-align: middle;">Approved</span>';
-            } else {
-                statusHtml = '<span class="badge rounded-pill text-bg-danger" style="line-height: 1; vertical-align: middle;">Rejected</span>';
-            }
-            return statusHtml;
-        }
 
-        function actionFormatter(value, row, index) {
-            var approveBtn = '<button type="button" class="btn btn-sm btn-primary" onclick="approveRequest(' + row.id + ', \'' + row.name + '\')">Approve</button>';
-            var rejectBtn = '<button type="button" class="btn btn-danger btn-sm" onclick="rejectRequest(' + row.id + ', \'' + row.name + '\')">Reject</button>';
-            return approveBtn + ' ' + rejectBtn;
-        }
 
         var notyf = new Notyf({
             position: { x: 'center', y: 'top' },
@@ -150,61 +110,62 @@
             ]
         });
 
-        var isAdmin = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin")));
-        var isManagerIT = @Html.Raw(Json.Serialize(User.IsInRole("UserManagerIT")));
-        var isIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserIntern")));
-
-        function actionFormatter(value, row, index) {
+        function userFormatter(value, row, index) {
             var detailsBtn = '<button type="button" class="btn btn-sm btn-dark" onclick="showDetails(' + row.id + ')">Details</button>';
-            var updateBtn = '';
-
-            if (!row.componentReplaceDate && (isAdmin || isIntern)) {
-                updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
-            }
-
-            if (isManagerIT) {
-                return detailsBtn;
-            }
-
+            var updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
             return detailsBtn + ' ' + updateBtn;
+        }
+
+        function adminFormatter(value, row, index) {
+            var detailsBtn = '<button type="button" class="btn btn-sm btn-dark" onclick="showDetails(' + row.id + ')">Details</button>';
+            var updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+            var deleteUrl = '@Url.Action("Delete", "ComponentAssetReplacements")' + '/' + row.id;
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="deleteComponentAssetReplacements(' + row.id + ')">Delete</button>';
+            return detailsBtn + ' ' + updateBtn + ' ' + deleteBtn;
+        }
+
+        function deleteComponentAssetReplacements(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "ComponentAssetReplacements")' + '/' + id,
+                        type: 'POST',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    result.message,
+                                    'success'
+                                );
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    result.message,
+                                    'error'
+                                );
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         function statusFormatter(value) {
             if (value) {
-                return '<span class="badge rounded-pill badge-success text-dark">Done Replaced</span>';
+                return '<span class="badge rounded-pill badge-success">Done Replaced</span>';
             } else {
-                return '<span class="badge rounded-pill badge-warning text-dark">Pending</span>';
+                return '<span class="badge rounded-pill badge-warning">Pending</span>';
             }
         }
-
-
-        $('#deleteBtn').click(function () {
-            $('#deleteModal').modal('show');
-        });
-
-        $('#confirmDeleteBtn').click(function () {
-            var status = $('#deleteStatus').val();
-
-            $.ajax({
-                url: '@Url.Action("DeleteByStatus", "ComponentAssetReplacements")',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ status: status }),
-                success: function (result) {
-                    $('#deleteModal').modal('hide');
-                    if (result.success) {
-                        $('#table').bootstrapTable('refresh');
-                        notyf.success(result.message);
-                    } else {
-                        notyf.error(result.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    $('#deleteModal').modal('hide');
-                    notyf.error('Error occurred: ' + xhr.responseText);
-                }
-            });
-        });
 
         function showUpdateModal(id) {
             var row = $('#table').bootstrapTable('getRowByUniqueId', id);

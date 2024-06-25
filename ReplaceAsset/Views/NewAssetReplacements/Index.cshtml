@@ -50,7 +50,14 @@
                         <th data-field="newType" data-sortable="true" data-width="100">New Asset Type</th>
                         <th data-field="newSerialNumber" data-sortable="true" data-width="150">New Serial Number</th>
                         <th data-field="dateReplace" data-sortable="true" data-width="150">Date Replace</th>
-                        <th data-formatter="actionFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        @if (User.IsInRole("UserManagerIT") || User.IsInRole("UserIntern"))
+                        {
+                            <th data-formatter="userFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        }
+                        @if (User.IsInRole("UserAdmin"))
+                        {
+                            <th data-formatter="adminFormatter" class="text-center no-space-three text-nowrap" data-width="100">Actions</th>
+                        }
                     </tr>
                 </thead>
             </table>
@@ -107,26 +114,54 @@
             ]
         });
 
-        var isAdminOrIntern = @Html.Raw(Json.Serialize(User.IsInRole("UserAdmin") || User.IsInRole("UserIntern")));
-
-        function actionFormatter(value, row, index) {
+        function userFormatter(value, row, index) {
             var detailsBtn = '<button type="button" class="btn btn-sm btn-dark" onclick="showDetails(' + row.id + ')">Details</button>';
-            var updateBtn = '';
-
-            if (!row.dateReplace && isAdminOrIntern) {
-                updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
-            }
-
+            var updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
             return detailsBtn + ' ' + updateBtn;
         }
 
-        @*function statusFormatter(value, row, index) {
-        if (value) {
-        return '<span class="badge rounded-pill text-badge-success">Done Replaced</span>';
-        } else {
-        return '<span class="badge rounded-pill text-badge-secondary">Pending</span>';
+        function adminFormatter(value, row, index) {
+            var detailsBtn = '<button type="button" class="btn btn-sm btn-dark" onclick="showDetails(' + row.id + ')">Details</button>';
+            var updateBtn = '<button type="button" class="btn btn-sm btn-info" onclick="showUpdateModal(' + row.id + ')">Update</button>';
+            var deleteUrl = '@Url.Action("Delete", "NewAssetReplacements")' + '/' + row.id;
+            var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="deleteNewAssetReplacements(' + row.id + ')">Delete</button>';
+            return detailsBtn + ' ' + updateBtn + ' ' + deleteBtn;
         }
-        }*@
+
+        function deleteNewAssetReplacements(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "NewAssetReplacements")' + '/' + id,
+                        type: 'POST',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    result.message,
+                                    'success'
+                                );
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    result.message,
+                                    'error'
+                                );
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
             function showUpdateModal(id) {
                 $.ajax({
@@ -168,4 +203,4 @@
             window.location.href = '@Url.Action("Details", "NewAssetReplacements")/' + id;
         }
     </script>
-}
+} 
