@@ -51,7 +51,8 @@ namespace ReplaceAsset.Controllers
                 {
                     id = a.Id,
                     type = a.Type,
-                    serialNumber = a.SerialNumber,
+/*                    name = a.Name,
+*/                    serialNumber = a.SerialNumber,
                     location = a.Location,
                     dateInput = a.DateInput.HasValue ? a.DateInput.Value.ToString("dd MMM yyyy HH:mm") : null,
                     validationScrap = a.ValidationScrap

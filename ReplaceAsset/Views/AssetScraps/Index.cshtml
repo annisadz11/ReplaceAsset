@@ -58,6 +58,8 @@
                 <thead>
                     <tr>
                         <th data-field="type" data-sortable="true" data-width="100">Type</th>
+@*                         <th data-field="name" data-sortable="true" data-width="100">Name</th>
+ *@
                         <th data-field="serialNumber" data-sortable="true" data-width="150">Serial Number</th>
                         <th data-field="location" data-sortable="true" data-width="150">Location</th>
                         <th data-field="dateInput" data-sortable="true" data-width="150">Date Input</th>
@@ -193,7 +195,7 @@
             if (value) {
                 return '<span class="badge rounded-pill text-bg-success">Done Scrap</span>';
             } else {
-                return '<span class="badge rounded-pill text-bg-warning">Pending</span>';
+                return '<span class="badge rounded-pill text-bg-secondary">Pending</span>';
             }
         }
 
@@ -209,6 +211,7 @@
             var detailsBtn = '<a href="' + detailsUrl + '" class="btn btn-sm btn-dark">Details</a>';
             var editBtn = '<a href="' + editUrl + '" class="btn btn-sm btn-info">Edit</a>';
             var deleteBtn = '<button class="btn btn-sm btn-danger" onclick="deleteAssetScrap(' + row.id + ')">Delete</button>';
+
 
             if (isAdminOrIntern) {
                 return detailsBtn + ' ' + editBtn + ' ' + deleteBtn;
